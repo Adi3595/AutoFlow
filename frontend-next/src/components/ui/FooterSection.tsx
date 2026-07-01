@@ -119,7 +119,7 @@ export function FooterSection() {
         flexWrap: 'wrap',
         gap: '2rem'
       }}>
-        <div>© 2026 AUTOFLUX. ALL RIGHTS RESERVED.</div>
+        <div>© 2026 AUTOFLOW. ALL RIGHTS RESERVED.</div>
         <div style={{ display: 'flex', gap: '3rem' }}>
           <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>GITHUB</a>
           <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>TWITTER</a>

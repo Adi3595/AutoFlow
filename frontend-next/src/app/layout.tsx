@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AutoFlux | Autonomous Workflow Infrastructure",
-  description: "AutoFlux is an AI-native automation ecosystem combining conversational AI, autonomous agents, and intelligent execution pipelines for enterprise scale.",
+  title: "AutoFlow | Autonomous Workflow Infrastructure",
+  description: "AutoFlow is an AI-native automation ecosystem combining conversational AI, autonomous agents, and intelligent execution pipelines for enterprise scale.",
   openGraph: {
-    title: "AutoFlux | Autonomous Workflow Infrastructure",
+    title: "AutoFlow | Autonomous Workflow Infrastructure",
     description: "The intelligent canvas that translates natural language directly into executing, self-healing backend architecture.",
-    url: "https://autofluxos.example.com",
-    siteName: "AutoFlux",
+    url: "https://autoflowos.example.com",
+    siteName: "AutoFlow",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AutoFlux | Autonomous Workflow Infrastructure",
+    title: "AutoFlow | Autonomous Workflow Infrastructure",
     description: "The intelligent canvas that translates natural language directly into executing, self-healing backend architecture.",
   },
   robots: {

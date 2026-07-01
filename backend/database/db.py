@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 # Using SQLite for MVP local development
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./autoflux_os.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./autoflow_os.db")
 
 # SQLite needs connect_args={"check_same_thread": False}
 engine = create_engine(

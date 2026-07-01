@@ -101,7 +101,7 @@ export function HeroSection() {
               lineHeight: 1.6,
               marginBottom: '2rem'
             }}>
-              AutoFlux is not a template. It is an intelligent canvas that translates your natural language directly into executing, self-healing backend architecture.
+              AutoFlow is not a template. It is an intelligent canvas that translates your natural language directly into executing, self-healing backend architecture.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>

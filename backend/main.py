@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import workflows
 
 app = FastAPI(
-    title="AutoFlux OS Backend",
+    title="AutoFlow OS Backend",
     description="Autonomous workflow orchestration API",
     version="1.0.0"
 )
@@ -22,7 +22,7 @@ app.include_router(workflows.router, prefix="/api/workflows", tags=["Workflows"]
 
 @app.get("/")
 async def root():
-    return {"status": "online", "message": "AutoFlux OS orchestration engine is running"}
+    return {"status": "online", "message": "AutoFlow OS orchestration engine is running"}
 
 if __name__ == "__main__":
     import uvicorn

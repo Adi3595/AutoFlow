@@ -7,13 +7,13 @@ import { CheckCircle2, ArrowRightCircle } from 'lucide-react';
 const steps = [
   { num: '01', title: 'CONNECT', desc: 'Securely link all your internal databases and SaaS tools in one click.' },
   { num: '02', title: 'INTENT', desc: 'Speak to the engine. Describe your workflow outcome in plain English.' },
-  { num: '03', title: 'COMPILE', desc: 'AutoFlux generates the perfect node architecture instantly.' },
+  { num: '03', title: 'COMPILE', desc: 'AutoFlow generates the perfect node architecture instantly.' },
   { num: '04', title: 'EXECUTE', desc: 'Agents deploy autonomously, repairing routes if APIs change.' }
 ];
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" aria-label="How AutoFlux Works" style={{ background: 'var(--color-bg)' }}>
+    <section id="how-it-works" aria-label="How AutoFlow Works" style={{ background: 'var(--color-bg)' }}>
       {steps.map((step, idx) => (
         <div key={idx} style={{ 
           minHeight: '100vh', 
