@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150x150/020202/FFFFFF?text=AF" alt="AutoFlow Logo" width="120" height="120" />
-  <h1>AutoFlow</h1>
+  <img src="https://via.placeholder.com/150x150/020202/FFFFFF?text=AF" alt="AutoFlux Logo" width="120" height="120" />
+  <h1>AutoFlux</h1>
   <p><strong>Autonomous Workflow Infrastructure</strong></p>
   <p>An AI-native automation ecosystem combining conversational AI, autonomous agents, and intelligent execution pipelines.</p>
 
@@ -20,7 +20,7 @@
 
 ## :sparkles: Features
 
-AutoFlow enables you to describe automation tasks in plain English. The AI automatically:
+AutoFlux enables you to describe automation tasks in plain English. The AI automatically:
 - **Understands Intent**: Parses natural language requests.
 - **Plans Logic**: Compiles a Directed Acyclic Graph (DAG).
 - **Orchestrates Action**: Dispatches agents to execute pipeline nodes dynamically.
@@ -37,8 +37,8 @@ A **FastAPI** routing layer that serves as the brain of the ecosystem, intercept
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Adi3595/AutoFlow.git
-cd AutoFlow
+git clone https://github.com/Adi3595/AutoFlux.git
+cd AutoFlux
 ```
 
 ### 2. Start the Frontend (Next.js)

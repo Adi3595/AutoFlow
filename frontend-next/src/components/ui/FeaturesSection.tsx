@@ -24,7 +24,7 @@ export function FeaturesSection() {
                 gap: '4rem', 
                 fontSize: 'clamp(3rem, 6vw, 6rem)', 
                 fontWeight: 700, 
-                fontFamily: 'Outfit, sans-serif', 
+                fontFamily: 'Ancola, Outfit, sans-serif', 
                 color: idx % 2 === 0 ? 'transparent' : '#fff', 
                 WebkitTextStroke: idx % 2 === 0 ? '1px #fff' : 'none' 
               }}

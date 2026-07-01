@@ -28,7 +28,7 @@ export function EcosystemSection() {
         pointerEvents: 'none', 
         color: 'var(--color-accent)',
         textShadow: '0 10px 40px rgba(2,2,2,0.9), 0 0 20px rgba(2,2,2,0.8)',
-        fontFamily: 'Outfit, sans-serif',
+        fontFamily: 'Ancola, Outfit, sans-serif',
         lineHeight: 0.9,
         letterSpacing: '-0.02em'
       }}>

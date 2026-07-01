@@ -73,7 +73,7 @@ export function FooterSection() {
             style={{ 
               fontSize: 'clamp(4rem, 10vw, 12rem)', 
               fontWeight: 700, 
-              fontFamily: 'Outfit, sans-serif',
+              fontFamily: 'Ancola, Outfit, sans-serif',
               lineHeight: 0.9,
               letterSpacing: '-0.04em',
               margin: 0,
@@ -119,7 +119,7 @@ export function FooterSection() {
         flexWrap: 'wrap',
         gap: '2rem'
       }}>
-        <div>© 2026 AUTOFLOW. ALL RIGHTS RESERVED.</div>
+        <div>© 2026 AUTOFLUX. ALL RIGHTS RESERVED.</div>
         <div style={{ display: 'flex', gap: '3rem' }}>
           <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>GITHUB</a>
           <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>TWITTER</a>

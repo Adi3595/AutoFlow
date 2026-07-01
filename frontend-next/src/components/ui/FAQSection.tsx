@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function FAQSection() {
   const faqs = [
-    { q: "How does it differ from Zapier?", a: "Zapier is static. If an endpoint changes, your Zap breaks. AutoFlow uses agents that read documentation and self-heal API routes dynamically." },
+    { q: "How does it differ from Zapier?", a: "Zapier is static. If an endpoint changes, your Zap breaks. AutoFlux uses agents that read documentation and self-heal API routes dynamically." },
     { q: "Can I host this on my VPC?", a: "Yes. Enterprise plans include fully air-gapped Docker clusters that run entirely within your secure network." },
     { q: "What LLM is under the hood?", a: "A custom orchestration layer. We route logic tasks to specialized coding models and intent parsing to high-speed general models for zero-latency execution." },
     { q: "Is workflow complexity limited?", a: "No. The architecture compiles to a Directed Acyclic Graph. You can build infinitely deep branching paths." }
@@ -52,7 +52,7 @@ export function FAQSection() {
                 color: hoveredIdx === idx ? '#fff' : 'rgba(255,255,255,0.3)',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                fontFamily: 'Outfit, sans-serif',
+                fontFamily: 'Ancola, Outfit, sans-serif',
                 lineHeight: 1.2
               }}
             >

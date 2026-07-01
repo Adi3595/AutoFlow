@@ -21,7 +21,7 @@ export function PricingSection() {
         <motion.div
           animate={{ x: ["0%", "-50%"] }}
           transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-          style={{ display: 'flex', whiteSpace: 'nowrap', gap: '4rem', fontSize: '3rem', fontWeight: 600, fontFamily: 'Outfit, sans-serif', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.1em' }}
+          style={{ display: 'flex', whiteSpace: 'nowrap', gap: '4rem', fontSize: '3rem', fontWeight: 600, fontFamily: 'Ancola, Outfit, sans-serif', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.1em' }}
         >
           <span>PRICING ARCHITECTURE &bull; TRANSPARENT INFRASTRUCTURE &bull; NO HIDDEN FEES &bull; PRICING ARCHITECTURE &bull; TRANSPARENT INFRASTRUCTURE &bull; NO HIDDEN FEES &bull;</span>
         </motion.div>

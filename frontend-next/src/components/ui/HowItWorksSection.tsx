@@ -7,13 +7,13 @@ import { CheckCircle2, ArrowRightCircle } from 'lucide-react';
 const steps = [
   { num: '01', title: 'CONNECT', desc: 'Securely link all your internal databases and SaaS tools in one click.' },
   { num: '02', title: 'INTENT', desc: 'Speak to the engine. Describe your workflow outcome in plain English.' },
-  { num: '03', title: 'COMPILE', desc: 'AutoFlow generates the perfect node architecture instantly.' },
+  { num: '03', title: 'COMPILE', desc: 'AutoFlux generates the perfect node architecture instantly.' },
   { num: '04', title: 'EXECUTE', desc: 'Agents deploy autonomously, repairing routes if APIs change.' }
 ];
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" aria-label="How AutoFlow Works" style={{ background: 'var(--color-bg)' }}>
+    <section id="how-it-works" aria-label="How AutoFlux Works" style={{ background: 'var(--color-bg)' }}>
       {steps.map((step, idx) => (
         <div key={idx} style={{ 
           minHeight: '100vh', 
@@ -34,7 +34,7 @@ export function HowItWorksSection() {
             background: 'rgba(255,255,255,0.02)'
           }}>
             <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.5 }}>
-              <div style={{ fontSize: 'clamp(6rem, 10vw, 15rem)', fontWeight: 700, lineHeight: 0.8, color: 'var(--color-accent)', fontFamily: 'Outfit, sans-serif' }}>
+              <div style={{ fontSize: 'clamp(6rem, 10vw, 15rem)', fontWeight: 700, lineHeight: 0.8, color: 'var(--color-accent)', fontFamily: 'Ancola, Outfit, sans-serif' }}>
                 {step.num}
               </div>
               <div style={{ fontSize: 'clamp(2rem, 4vw, 4rem)', fontWeight: 300, marginTop: '2rem', letterSpacing: '0.2em' }}>
