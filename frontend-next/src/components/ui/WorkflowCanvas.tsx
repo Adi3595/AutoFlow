@@ -92,8 +92,8 @@ export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }
         <Controls style={{ background: '#111', color: '#fff', border: '1px solid #333' }} />
         <MiniMap 
           nodeColor={(n) => {
-            if (n.style?.border?.includes('ffb86c')) return '#ffb86c';
-            if (n.style?.border?.includes('ff79c6')) return '#ff79c6';
+            if (String(n.style?.border || '').includes('ffb86c')) return '#ffb86c';
+            if (String(n.style?.border || '').includes('ff79c6')) return '#ff79c6';
             return '#b2d5e5';
           }}
           maskColor="rgba(0,0,0,0.8)"
