@@ -113,7 +113,10 @@ export function HeroSection() {
                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
                     const response = await fetch(`${apiUrl}/api/workflows/deploy`, {
                       method: "POST",
-                      headers: { "Content-Type": "application/json" },
+                      headers: { 
+                        "Content-Type": "application/json",
+                        "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "af_dev_secret_99"
+                      },
                       body: JSON.stringify({ intent: "Initialize core automation system" })
                     });
                     const data = await response.json();

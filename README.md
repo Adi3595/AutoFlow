@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150x150/020202/FFFFFF?text=AF" alt="AutoFlow Logo" width="120" height="120" />
+  <img src="./frontend-next/public/logo.svg" alt="AutoFlow Logo" width="120" height="120" />
   <h1>AutoFlow</h1>
   <p><strong>Autonomous Workflow Infrastructure</strong></p>
   <p>An AI-native automation ecosystem combining conversational AI, autonomous agents, and intelligent execution pipelines.</p>

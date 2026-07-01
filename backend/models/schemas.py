@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 
 class DeployRequest(BaseModel):
-    intent: str = Field(..., description="Natural language intent describing the desired workflow")
+    intent: str = Field(..., min_length=10, max_length=1000, description="Natural language intent describing the desired workflow")
     
 class WorkflowNode(BaseModel):
     id: str
