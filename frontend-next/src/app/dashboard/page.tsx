@@ -62,24 +62,45 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        <Link href="/" passHref style={{ textDecoration: "none" }}>
-          <motion.button
-            whileHover={{ x: -5 }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              background: "transparent",
-              border: "none",
-              color: "rgba(255,255,255,0.7)",
-              cursor: "pointer",
-              fontFamily: "monospace",
-              fontSize: "0.9rem"
-            }}
-          >
-            <ArrowLeft size={16} /> RETURN TO PROMPT
-          </motion.button>
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+          <Link href="/integrations" passHref style={{ textDecoration: "none" }}>
+            <motion.button
+              whileHover={{ y: -2 }}
+              style={{
+                background: "var(--color-accent)",
+                border: "none",
+                borderRadius: "4px",
+                padding: "0.5rem 1rem",
+                color: "#000",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "monospace",
+                fontSize: "0.9rem"
+              }}
+            >
+              [+] INTEGRATIONS
+            </motion.button>
+          </Link>
+
+          <Link href="/" passHref style={{ textDecoration: "none" }}>
+            <motion.button
+              whileHover={{ x: -5 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                background: "transparent",
+                border: "none",
+                color: "rgba(255,255,255,0.7)",
+                cursor: "pointer",
+                fontFamily: "monospace",
+                fontSize: "0.9rem"
+              }}
+            >
+              <ArrowLeft size={16} /> RETURN TO PROMPT
+            </motion.button>
+          </Link>
+        </div>
       </header>
 
       {/* Main Content */}
