@@ -8,6 +8,7 @@ export function HeroSection() {
   const [activeNode, setActiveNode] = useState(0);
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployMessage, setDeployMessage] = useState("");
+  const [deployedNodes, setDeployedNodes] = useState<any[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -122,6 +123,7 @@ export function HeroSection() {
                     const data = await response.json();
                     if (data.status === "success") {
                       setDeployMessage(`Deployed! ID: ${data.workflow_id}`);
+                      setDeployedNodes(data.nodes || []);
                     }
                   } catch (e) {
                     setDeployMessage("Connection to backend failed.");
@@ -155,11 +157,40 @@ export function HeroSection() {
 
               {deployMessage && (
                 <motion.div 
-                  initial={{ opacity: 0, y: -10 }} 
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{ color: 'var(--color-accent)', fontSize: '0.9rem', paddingLeft: '1rem', fontFamily: 'monospace' }}
+                  initial={{ opacity: 0, height: 0 }} 
+                  animate={{ opacity: 1, height: 'auto' }}
+                  style={{ 
+                    marginTop: '2rem',
+                    background: 'rgba(0,0,0,0.4)', 
+                    border: '1px solid rgba(178, 213, 229, 0.2)',
+                    borderRadius: '8px',
+                    padding: '1.5rem',
+                    fontFamily: 'monospace',
+                    textAlign: 'left',
+                    fontSize: '0.9rem',
+                    color: '#fff',
+                    width: '100%',
+                    maxWidth: '500px'
+                  }}
                 >
-                  {deployMessage}
+                  <div style={{ color: 'var(--color-accent)', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(178, 213, 229, 0.2)' }}>
+                    [SYSTEM] {deployMessage}
+                  </div>
+                  {deployedNodes && deployedNodes.length > 0 && deployedNodes.map((node, i) => (
+                    <motion.div 
+                      key={node.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.15 }}
+                      style={{ marginBottom: '0.8rem', display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}
+                    >
+                      <span style={{ color: 'var(--color-accent)' }}>&gt;</span>
+                      <div>
+                        <div style={{ fontWeight: 600, color: 'var(--color-accent)' }}>{node.type.toUpperCase()}</div>
+                        <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>{node.name}</div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </motion.div>
               )}
             </div>
