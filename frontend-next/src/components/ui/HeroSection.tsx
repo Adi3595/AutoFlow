@@ -9,6 +9,7 @@ export function HeroSection() {
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployMessage, setDeployMessage] = useState("");
   const [deployedNodes, setDeployedNodes] = useState<any[]>([]);
+  const [executionLogs, setExecutionLogs] = useState<string[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -124,6 +125,7 @@ export function HeroSection() {
                     if (data.status === "success") {
                       setDeployMessage(`Deployed! ID: ${data.workflow_id}`);
                       setDeployedNodes(data.nodes || []);
+                      setExecutionLogs(data.execution_logs || []);
                     }
                   } catch (e) {
                     setDeployMessage("Connection to backend failed.");
@@ -189,6 +191,43 @@ export function HeroSection() {
                         <div style={{ fontWeight: 600, color: 'var(--color-accent)' }}>{node.type.toUpperCase()}</div>
                         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>{node.name}</div>
                       </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+
+              {executionLogs && executionLogs.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }} 
+                  animate={{ opacity: 1, height: 'auto' }}
+                  style={{ 
+                    marginTop: '1rem',
+                    background: 'rgba(0,10,0,0.6)', 
+                    border: '1px solid rgba(0, 255, 0, 0.2)',
+                    borderRadius: '8px',
+                    padding: '1.5rem',
+                    fontFamily: 'monospace',
+                    textAlign: 'left',
+                    fontSize: '0.8rem',
+                    color: '#0f0',
+                    width: '100%',
+                    maxWidth: '500px',
+                    maxHeight: '300px',
+                    overflowY: 'auto'
+                  }}
+                >
+                  <div style={{ color: '#0f0', fontWeight: 600, marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(0, 255, 0, 0.2)' }}>
+                    [RUNTIME EXECUTION LOGS]
+                  </div>
+                  {executionLogs.map((log, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: (deployedNodes.length * 0.15) + (i * 0.1) }}
+                      style={{ marginBottom: '0.4rem', whiteSpace: 'pre-wrap' }}
+                    >
+                      {log}
                     </motion.div>
                   ))}
                 </motion.div>

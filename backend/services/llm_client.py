@@ -9,23 +9,49 @@ from models.schemas import WorkflowNode
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 class LLMClient:
+    
+    @staticmethod
+    def _call_gemini(prompt: str, json_mode: bool = False) -> str:
+        if not GEMINI_API_KEY or GEMINI_API_KEY == "your_gemini_key_here":
+            return '{"error": "GEMINI_API_KEY not found"}' if json_mode else "ERROR: GEMINI_API_KEY not found"
+
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+        
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+        if json_mode:
+            payload["generationConfig"] = {"responseMimeType": "application/json"}
+        
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode('utf-8'),
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+        
+        try:
+            with urllib.request.urlopen(req) as response:
+                result_json = json.loads(response.read().decode('utf-8'))
+                
+            raw_text = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
+            
+            if json_mode:
+                if raw_text.startswith("```json"):
+                    raw_text = raw_text[7:]
+                if raw_text.endswith("```"):
+                    raw_text = raw_text[:-3]
+                    
+            return raw_text
+        except urllib.error.URLError as e:
+            raise Exception(f"Network Error: {e}")
+        except (KeyError, IndexError) as e:
+            raise Exception(f"Unexpected response structure: {e}")
+
+
     @staticmethod
     def generate_workflow_from_intent(intent: str) -> List[WorkflowNode]:
-        if not GEMINI_API_KEY:
-            print("[WARNING] GEMINI_API_KEY not found. Falling back to mock data.")
-            return [
-                WorkflowNode(
-                    id=f"node_{uuid.uuid4().hex[:6]}",
-                    type="trigger",
-                    name="API Key Missing",
-                    metadata={"error": "Please provide GEMINI_API_KEY in backend environment"}
-                )
-            ]
-
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
-            
-            prompt = f"""
+        prompt = f"""
 You are an intelligent workflow orchestration engine.
 The user has provided the following intent: "{intent}"
 
@@ -48,36 +74,14 @@ Example structure:
   }}
 ]
 """
-            
-            payload = {
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"responseMimeType": "application/json"}
-            }
-            
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode('utf-8'),
-                headers={'Content-Type': 'application/json'},
-                method='POST'
-            )
-            
-            with urllib.request.urlopen(req) as response:
-                result_json = json.loads(response.read().decode('utf-8'))
-                
-            # Parse Gemini API response structure
-            try:
-                raw_text = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
-            except (KeyError, IndexError):
-                raise ValueError("Unexpected response structure from Gemini API")
-            
-            if raw_text.startswith("```json"):
-                raw_text = raw_text[7:]
-            if raw_text.endswith("```"):
-                raw_text = raw_text[:-3]
-
+        try:
+            raw_text = LLMClient._call_gemini(prompt, json_mode=True)
             nodes_data = json.loads(raw_text)
             
             nodes = []
+            if isinstance(nodes_data, dict) and "error" in nodes_data:
+                return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="API Error", metadata={"error": nodes_data["error"]})]
+
             for item in nodes_data:
                 metadata = item.get("metadata", {})
                 node = WorkflowNode(
@@ -90,9 +94,23 @@ Example structure:
                 
             return nodes
 
-        except urllib.error.URLError as e:
-            print(f"[ERROR] LLM Network Failed: {e}")
-            return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="Network Error", metadata={"error": str(e)})]
         except Exception as e:
-            print(f"[ERROR] LLM Generation Failed: {e}")
+            print(f"[ERROR] LLM Workflow Generation Failed: {e}")
             return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="LLM Error", metadata={"error": str(e)})]
+
+    @staticmethod
+    def execute_action(action_name: str, intent: str, previous_context: str = "") -> str:
+        prompt = f"""
+You are the execution agent for an AI workflow operating system.
+Your current task is to execute the following action node: "{action_name}"
+
+The overall user intent is: "{intent}"
+Previous Execution Context (if any): "{previous_context}"
+
+Perform the action requested by the node. If it requires writing an email, write the email. If it requires summarizing text, summarize it. If it requires making a decision, make it.
+Do not wrap your response in markdown. Just return the pure text result of the execution.
+"""
+        try:
+            return LLMClient._call_gemini(prompt, json_mode=False)
+        except Exception as e:
+            return f"Execution Failed: {e}"

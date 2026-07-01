@@ -2,3 +2,4 @@ fastapi==0.95.1
 uvicorn
 pydantic<2
 slowapi
+python-dotenv

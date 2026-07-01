@@ -14,4 +14,5 @@ class DeployResponse(BaseModel):
     status: str
     workflow_id: str
     nodes: List[WorkflowNode]
+    execution_logs: List[str] = Field(default_factory=list)
     message: Optional[str] = None
