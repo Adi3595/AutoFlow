@@ -1,15 +1,58 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Network, Activity, Cpu, Database, Zap } from 'lucide-react';
 
 export function DashboardPreview() {
+  const [liveStats, setLiveStats] = useState({
+    agents: 0,
+    workflows: 0,
+  });
+
+  useEffect(() => {
+    const loadStats = () => {
+      const workflows = JSON.parse(localStorage.getItem("autoflow_workflows") || "[]");
+      const agents = JSON.parse(localStorage.getItem("autoflow_agents") || "[]");
+      const uniqueAgents = agents.filter((v: any, i: number, a: any[]) =>
+        a.findIndex((t: any) => t.name === v.name) === i
+      );
+      setLiveStats({ workflows: workflows.length, agents: uniqueAgents.length });
+    };
+
+    // Load on mount
+    loadStats();
+
+    // Also refresh every 3s in case user deploys in another tab
+    const interval = setInterval(loadStats, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const metrics = [
-    { label: 'ACTIVE AGENTS', value: '42', icon: <Cpu color="var(--color-accent)" size={24} /> },
-    { label: 'WORKFLOWS', value: '18', icon: <Network color="var(--color-accent)" size={24} /> },
-    { label: 'DATA SYNC', value: '99.9%', icon: <Database color="var(--color-accent)" size={24} /> },
-    { label: 'LATENCY', value: '12ms', icon: <Activity color="var(--color-accent)" size={24} /> },
+    {
+      label: 'ACTIVE AGENTS',
+      value: liveStats.agents > 0 ? String(liveStats.agents) : '0',
+      isLive: true,
+      icon: <Cpu color="var(--color-accent)" size={24} />
+    },
+    {
+      label: 'WORKFLOWS',
+      value: liveStats.workflows > 0 ? String(liveStats.workflows) : '0',
+      isLive: true,
+      icon: <Network color="var(--color-accent)" size={24} />
+    },
+    {
+      label: 'DATA SYNC',
+      value: '99.9%',
+      isLive: false,
+      icon: <Database color="var(--color-accent)" size={24} />
+    },
+    {
+      label: 'LATENCY',
+      value: '12ms',
+      isLive: false,
+      icon: <Activity color="var(--color-accent)" size={24} />
+    },
   ];
 
   return (
@@ -33,21 +76,57 @@ export function DashboardPreview() {
       {/* Massive Metrics Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', width: '100%', maxWidth: '1200px', marginBottom: '4rem' }}>
         {metrics.map((metric, idx) => (
-          <div key={idx} style={{ 
-            background: 'rgba(255,255,255,0.02)', 
-            border: '1px solid rgba(255,255,255,0.05)', 
-            padding: '2rem', 
-            borderRadius: '24px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem'
-          }}>
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            viewport={{ once: true }}
+            style={{ 
+              background: 'rgba(255,255,255,0.02)', 
+              border: `1px solid ${metric.isLive ? 'rgba(178,213,229,0.15)' : 'rgba(255,255,255,0.05)'}`, 
+              padding: '2rem', 
+              borderRadius: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              position: 'relative',
+              overflow: 'hidden'
+            }}
+          >
+            {/* LIVE indicator pulse for dynamic stats */}
+            {metric.isLive && (
+              <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <motion.div
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  style={{ width: '6px', height: '6px', borderRadius: '50%', background: liveStats.agents > 0 || liveStats.workflows > 0 ? '#0f0' : 'rgba(255,255,255,0.2)' }}
+                />
+                <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', color: liveStats.agents > 0 || liveStats.workflows > 0 ? '#0f0' : 'rgba(255,255,255,0.2)' }}>LIVE</span>
+              </div>
+            )}
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', fontFamily: 'monospace' }}>{metric.label}</div>
               {metric.icon}
             </div>
-            <div style={{ fontSize: '3.5rem', color: '#fff', fontWeight: 300, lineHeight: 1 }}>{metric.value}</div>
-          </div>
+
+            <motion.div
+              key={metric.value}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ fontSize: '3.5rem', color: metric.isLive ? 'var(--color-accent)' : '#fff', fontWeight: 300, lineHeight: 1, fontFamily: 'monospace' }}
+            >
+              {metric.value}
+            </motion.div>
+
+            {metric.isLive && (liveStats.agents === 0 && liveStats.workflows === 0) && (
+              <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace' }}>
+                Deploy a workflow to start tracking
+              </div>
+            )}
+          </motion.div>
         ))}
       </div>
       
