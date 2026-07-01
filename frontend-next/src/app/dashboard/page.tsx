@@ -8,6 +8,7 @@ import WorkflowCanvas from "@/components/ui/WorkflowCanvas";
 
 export default function Dashboard() {
   const [nodes, setNodes] = useState<any[]>([]);
+  const [history, setHistory] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -20,6 +21,15 @@ export default function Dashboard() {
         console.error("Failed to parse nodes from local storage");
       }
     }
+    
+    // Load memory engine history
+    const savedHistory = localStorage.getItem("autoflow_history");
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {}
+    }
+    
     setIsLoaded(true);
   }, []);
 
@@ -82,21 +92,39 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Workflow Canvas Area */}
-        <div style={{ flex: 1, position: "relative" }}>
-          {isLoaded ? (
-            nodes.length > 0 ? (
-              <WorkflowCanvas workflowData={nodes} />
-            ) : (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "rgba(255,255,255,0.4)", fontFamily: "monospace" }}>
-                [NO ACTIVE WORKFLOW DETECTED IN STATE]
-              </div>
-            )
-          ) : (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--color-accent)", fontFamily: "monospace" }}>
-              [LOADING VISUALIZER...]
+        <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+          {/* Sidebar for Memory Engine */}
+          <div style={{ width: "300px", borderRight: "1px solid rgba(178, 213, 229, 0.1)", background: "rgba(0,0,0,0.2)", padding: "2rem", overflowY: "auto" }}>
+            <h3 style={{ margin: "0 0 1rem 0", fontSize: "1rem", color: "var(--color-accent)", fontFamily: "monospace" }}>[MEMORY ENGINE]</h3>
+            <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", marginBottom: "2rem" }}>Past workflow intents</p>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {history.length > 0 ? history.map((item, i) => (
+                <div key={i} style={{ padding: "1rem", background: "rgba(178, 213, 229, 0.05)", borderRadius: "4px", fontSize: "0.85rem", borderLeft: "2px solid var(--color-accent)" }}>
+                  "{item}"
+                </div>
+              )) : (
+                <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>No history recorded.</div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Workflow Canvas Area */}
+          <div style={{ flex: 1, position: "relative" }}>
+            {isLoaded ? (
+              nodes.length > 0 ? (
+                <WorkflowCanvas workflowData={nodes} />
+              ) : (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "rgba(255,255,255,0.4)", fontFamily: "monospace" }}>
+                  [NO ACTIVE WORKFLOW DETECTED IN STATE]
+                </div>
+              )
+            ) : (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "var(--color-accent)", fontFamily: "monospace" }}>
+                [LOADING VISUALIZER...]
+              </div>
+            )}
+          </div>
         </div>
       </main>
 

@@ -28,6 +28,34 @@ const nodeStyle = {
 export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<any>([]);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+
+  // Sync selected node edits back to the nodes array
+  const handleNodeEdit = (field: string, value: string) => {
+    if (!selectedNode) return;
+    const updatedNode = { ...selectedNode, [field]: value };
+    setSelectedNode(updatedNode);
+    setNodes((nds) => 
+      nds.map((n) => {
+        if (n.id === selectedNode.id) {
+          // Keep label sync'd with name
+          let newLabel = n.data.label;
+          if (field === 'name') {
+            newLabel = (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', textAlign: 'left' }}>
+                <strong style={{ color: n.style?.border?.toString().includes('ffb86c') ? '#ffb86c' : n.style?.border?.toString().includes('ff79c6') ? '#ff79c6' : 'var(--color-accent)', fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+                  [{n.type.toUpperCase()}]
+                </strong>
+                <div style={{ fontWeight: 600, fontSize: '1rem' }}>{value}</div>
+              </div>
+            );
+          }
+          return { ...n, [field]: value, data: { ...n.data, label: field === 'name' ? newLabel : n.data.label } };
+        }
+        return n;
+      })
+    );
+  };
 
   useEffect(() => {
     if (!workflowData || workflowData.length === 0) return;
@@ -42,6 +70,8 @@ export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }
       return {
         id: node.id,
         type: 'default',
+        name: node.name,
+        nodeType: node.type,
         position: { x: 250, y: index * 150 + 50 }, // Stack vertically
         data: {
           label: (
@@ -87,6 +117,8 @@ export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeClick={(_, node) => setSelectedNode(node)}
+        onPaneClick={() => setSelectedNode(null)}
         fitView
       >
         <Controls style={{ background: '#111', color: '#fff', border: '1px solid #333' }} />
@@ -101,6 +133,62 @@ export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }
         />
         <Background color="#333" gap={20} />
       </ReactFlow>
+
+      {/* Slide-out Property Panel */}
+      {selectedNode && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '350px',
+          height: '100%',
+          background: 'rgba(5, 5, 5, 0.95)',
+          borderLeft: '1px solid var(--color-accent)',
+          padding: '2rem',
+          boxShadow: '-10px 0 30px rgba(0,0,0,0.8)',
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.5rem',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div style={{ borderBottom: '1px solid #333', paddingBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, color: 'var(--color-accent)', fontFamily: 'monospace' }}>NODE PROPERTIES</h3>
+            <button onClick={() => setSelectedNode(null)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2rem' }}>×</button>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>ID</label>
+            <div style={{ background: '#111', padding: '0.8rem', borderRadius: '4px', fontSize: '0.9rem', color: '#888', fontFamily: 'monospace' }}>
+              {selectedNode.id}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>TYPE</label>
+            <div style={{ background: '#111', padding: '0.8rem', borderRadius: '4px', fontSize: '0.9rem', color: '#888', fontFamily: 'monospace' }}>
+              {selectedNode.nodeType?.toUpperCase()}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.8rem', color: 'var(--color-accent)' }}>ACTION NAME</label>
+            <input 
+              value={selectedNode.name || ''}
+              onChange={(e) => handleNodeEdit('name', e.target.value)}
+              style={{
+                background: 'rgba(178, 213, 229, 0.05)',
+                border: '1px solid rgba(178, 213, 229, 0.2)',
+                color: '#fff',
+                padding: '0.8rem',
+                borderRadius: '4px',
+                fontFamily: 'monospace',
+                outline: 'none',
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,6 +5,12 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Code, Database, Cpu, Loader2, Command } from 'lucide-react';
 
+const PREDICTIVE_SUGGESTIONS = [
+  "Wait for an email, extract invoice, save to DB",
+  "Analyze Slack feedback. If negative, create Jira ticket",
+  "Summarize daily meeting notes and email the team"
+];
+
 export function HeroSection() {
   const router = useRouter();
   const [activeNode, setActiveNode] = useState(0);
@@ -137,6 +143,30 @@ export function HeroSection() {
                 />
               </div>
 
+              {/* Predictive Automation Suggestions */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+                {PREDICTIVE_SUGGESTIONS.map((suggestion, idx) => (
+                  <motion.button 
+                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(178, 213, 229, 0.1)' }}
+                    whileTap={{ scale: 0.98 }}
+                    key={idx}
+                    onClick={() => setIntent(suggestion)}
+                    style={{
+                      background: 'rgba(178, 213, 229, 0.05)',
+                      border: '1px solid rgba(178, 213, 229, 0.2)',
+                      borderRadius: '50px',
+                      padding: '0.4rem 0.8rem',
+                      fontSize: '0.8rem',
+                      color: 'var(--color-accent)',
+                      cursor: 'pointer',
+                      fontFamily: 'monospace'
+                    }}
+                  >
+                    + {suggestion}
+                  </motion.button>
+                ))}
+              </div>
+
               <motion.button 
                 onClick={async () => {
                   if (!intent.trim()) return;
@@ -156,6 +186,11 @@ export function HeroSection() {
                       // Save to local storage for dashboard
                       localStorage.setItem("autoflow_deployed_nodes", JSON.stringify(data.nodes || []));
                       localStorage.setItem("autoflow_execution_logs", JSON.stringify(data.execution_logs || []));
+                      
+                      // Save Memory Engine History
+                      const pastHistory = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
+                      localStorage.setItem("autoflow_history", JSON.stringify([intent, ...pastHistory.slice(0, 4)]));
+                      
                       // Route to dashboard
                       router.push('/dashboard');
                     }

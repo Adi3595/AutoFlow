@@ -114,3 +114,20 @@ Do not wrap your response in markdown. Just return the pure text result of the e
             return LLMClient._call_gemini(prompt, json_mode=False)
         except Exception as e:
             return f"Execution Failed: {e}"
+
+    @staticmethod
+    def heal_action(action_name: str, intent: str, error: str, previous_context: str = "") -> str:
+        prompt = f"""
+You are the execution agent for an AI workflow operating system.
+You previously tried to execute the node: "{action_name}" for the intent: "{intent}"
+However, it FAILED with this error: "{error}"
+
+Previous Execution Context (if any): "{previous_context}"
+
+Analyze the error, correct your approach, bypass the failure, and return a successful execution result.
+Do not wrap your response in markdown. Just return the pure text result of the execution.
+"""
+        try:
+            return LLMClient._call_gemini(prompt, json_mode=False)
+        except Exception as e:
+            return f"Self-Healing Failed: {e}"
