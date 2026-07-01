@@ -86,7 +86,7 @@ export function HeroSection() {
               fontWeight: 300, 
               lineHeight: 0.9, 
               margin: '0 0 2rem 0',
-              fontFamily: 'Outfit, sans-serif',
+              fontFamily: 'Ancola, Outfit, sans-serif',
               letterSpacing: '-0.04em'
             }}>
               THINK.<br />
@@ -110,7 +110,8 @@ export function HeroSection() {
                   setIsDeploying(true);
                   setDeployMessage("");
                   try {
-                    const response = await fetch("http://localhost:8000/api/workflows/deploy", {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+                    const response = await fetch(`${apiUrl}/api/workflows/deploy`, {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ intent: "Initialize core automation system" })
