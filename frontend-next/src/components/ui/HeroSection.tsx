@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, Code, Database, Cpu, Loader2 } from 'lucide-react';
+import { ArrowUpRight, Code, Database, Cpu, Loader2, Command } from 'lucide-react';
 
 export function HeroSection() {
+  const router = useRouter();
   const [activeNode, setActiveNode] = useState(0);
   const [isDeploying, setIsDeploying] = useState(false);
+  const [intent, setIntent] = useState("");
   const [deployMessage, setDeployMessage] = useState("");
-  const [deployedNodes, setDeployedNodes] = useState<any[]>([]);
-  const [executionLogs, setExecutionLogs] = useState<string[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -106,11 +107,40 @@ export function HeroSection() {
               AutoFlow is not a template. It is an intelligent canvas that translates your natural language directly into executing, self-healing backend architecture.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start', width: '100%' }}>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                background: 'rgba(0,0,0,0.5)', 
+                border: '1px solid rgba(178, 213, 229, 0.2)', 
+                borderRadius: '8px',
+                padding: '0.5rem 1rem',
+                width: '100%',
+                maxWidth: '500px'
+              }}>
+                <Command size={18} style={{ color: 'rgba(255,255,255,0.4)', marginRight: '0.8rem' }} />
+                <input 
+                  type="text" 
+                  placeholder="e.g. Analyze user sentiment and draft an email..." 
+                  value={intent}
+                  onChange={(e) => setIntent(e.target.value)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'white',
+                    width: '100%',
+                    fontFamily: 'var(--font-primary), sans-serif',
+                    fontSize: '1rem',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+
               <motion.button 
                 onClick={async () => {
+                  if (!intent.trim()) return;
                   setIsDeploying(true);
-                  setDeployMessage("");
                   try {
                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
                     const response = await fetch(`${apiUrl}/api/workflows/deploy`, {
@@ -119,16 +149,18 @@ export function HeroSection() {
                         "Content-Type": "application/json",
                         "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "af_dev_secret_99"
                       },
-                      body: JSON.stringify({ intent: "Initialize core automation system" })
+                      body: JSON.stringify({ intent: intent })
                     });
                     const data = await response.json();
                     if (data.status === "success") {
-                      setDeployMessage(`Deployed! ID: ${data.workflow_id}`);
-                      setDeployedNodes(data.nodes || []);
-                      setExecutionLogs(data.execution_logs || []);
+                      // Save to local storage for dashboard
+                      localStorage.setItem("autoflow_deployed_nodes", JSON.stringify(data.nodes || []));
+                      localStorage.setItem("autoflow_execution_logs", JSON.stringify(data.execution_logs || []));
+                      // Route to dashboard
+                      router.push('/dashboard');
                     }
                   } catch (e) {
-                    setDeployMessage("Connection to backend failed.");
+                    console.error(e);
                   } finally {
                     setIsDeploying(false);
                   }
