@@ -120,10 +120,10 @@ export function FooterSection() {
         gap: '2rem'
       }}>
         <div>© 2026 AUTOFLOW. ALL RIGHTS RESERVED.</div>
-        <div style={{ display: 'flex', gap: '3rem' }}>
-          <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>GITHUB</a>
-          <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>TWITTER</a>
-          <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>DISCORD</a>
+        <div style={{ display: 'flex', gap: '2rem', fontSize: '0.85rem' }}>
+          <a href="https://github.com/Adi3595/AutoFlow" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>GITHUB</a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>TWITTER</a>
+          <a href="https://discord.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>DISCORD</a>
         </div>
       </div>
 

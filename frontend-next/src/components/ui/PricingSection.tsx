@@ -56,7 +56,8 @@ export function PricingSection() {
 
           <div style={{ marginTop: 'auto' }}>
             <motion.button 
-              whileHover={{ x: 10 }}
+              onClick={() => window.open('https://github.com/Adi3595/AutoFlow', '_blank')}
+              whileHover={{ scale: 1.05 }}
               style={{
                 background: 'transparent',
                 color: '#fff',
@@ -114,6 +115,7 @@ export function PricingSection() {
 
           <div style={{ marginTop: 'auto', position: 'relative', zIndex: 1 }}>
             <motion.button 
+              onClick={() => window.location.href = 'mailto:engineering@autoflow.com'}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               style={{
