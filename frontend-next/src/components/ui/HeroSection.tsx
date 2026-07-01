@@ -181,16 +181,24 @@ export function HeroSection() {
                       });
                       const data = await response.json();
                       if (data.status === "success") {
-                        // Save to local storage for dashboard
-                        localStorage.setItem("autoflow_deployed_nodes", JSON.stringify(data.nodes || []));
-                        localStorage.setItem("autoflow_execution_logs", JSON.stringify(data.execution_logs || []));
-                        
+                        // Build the full workflow record
+                        const newWorkflow = {
+                          id: data.workflow_id || `wf_${Date.now()}`,
+                          intent: intent,
+                          createdAt: new Date().toISOString(),
+                          nodes: data.nodes || [],
+                          agents: data.agents || [],
+                        };
+
+                        // Prepend to the persistent workflows list
+                        const existingWorkflows = JSON.parse(localStorage.getItem("autoflow_workflows") || "[]");
+                        localStorage.setItem("autoflow_workflows", JSON.stringify([newWorkflow, ...existingWorkflows]));
+
                         // Append new agents to global agent pool
                         const existingAgents = JSON.parse(localStorage.getItem("autoflow_agents") || "[]");
-                        const newAgents = data.agents || [];
-                        localStorage.setItem("autoflow_agents", JSON.stringify([...newAgents, ...existingAgents]));
-                        
-                        // Save Memory Engine History
+                        localStorage.setItem("autoflow_agents", JSON.stringify([...newWorkflow.agents, ...existingAgents]));
+
+                        // Save Memory Engine History (legacy support)
                         const pastHistory = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
                         localStorage.setItem("autoflow_history", JSON.stringify([intent, ...pastHistory.slice(0, 4)]));
                         
