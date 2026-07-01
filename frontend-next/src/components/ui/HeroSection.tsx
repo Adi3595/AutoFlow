@@ -14,8 +14,20 @@ const PREDICTIVE_SUGGESTIONS = [
 export function HeroSection() {
   const router = useRouter();
   const [activeNode, setActiveNode] = useState(0);
-  const [isDeploying, setIsDeploying] = useState(false);
   const [intent, setIntent] = useState("");
+  const [isDeploying, setIsDeploying] = useState(false);
+  const [stats, setStats] = useState({ workflows: 0, agents: 0 });
+
+  useEffect(() => {
+    // Load dynamic stats from local storage
+    const history = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
+    const agents = JSON.parse(localStorage.getItem("autoflow_agents") || "[]");
+    
+    // De-duplicate agents by name for accurate count
+    const uniqueAgents = agents.filter((v: any, i: number, a: any[]) => a.findIndex((t: any) => (t.name === v.name)) === i);
+    
+    setStats({ workflows: history.length, agents: uniqueAgents.length });
+  }, []);
   const [deployMessage, setDeployMessage] = useState("");
 
   useEffect(() => {
@@ -173,6 +185,11 @@ export function HeroSection() {
                         localStorage.setItem("autoflow_deployed_nodes", JSON.stringify(data.nodes || []));
                         localStorage.setItem("autoflow_execution_logs", JSON.stringify(data.execution_logs || []));
                         
+                        // Append new agents to global agent pool
+                        const existingAgents = JSON.parse(localStorage.getItem("autoflow_agents") || "[]");
+                        const newAgents = data.agents || [];
+                        localStorage.setItem("autoflow_agents", JSON.stringify([...newAgents, ...existingAgents]));
+                        
                         // Save Memory Engine History
                         const pastHistory = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
                         localStorage.setItem("autoflow_history", JSON.stringify([intent, ...pastHistory.slice(0, 4)]));
@@ -237,6 +254,38 @@ export function HeroSection() {
                 ))}
               </div>
 
+              {/* Live Analytics Dock */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                style={{
+                  display: 'flex',
+                  gap: '2rem',
+                  marginTop: '3rem',
+                  padding: '1.5rem 2rem',
+                  background: 'rgba(5, 10, 15, 0.5)',
+                  border: '1px solid rgba(178, 213, 229, 0.1)',
+                  borderRadius: '12px',
+                  backdropFilter: 'blur(10px)',
+                  maxWidth: '650px',
+                  width: '100%'
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', marginBottom: '0.5rem' }}>WORKFLOWS DEPLOYED</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 700, color: '#fff', fontFamily: 'monospace' }}>
+                    {stats.workflows > 0 ? stats.workflows : '0'}
+                  </div>
+                </div>
+                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+                <div>
+                  <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', marginBottom: '0.5rem' }}>ACTIVE AI AGENTS</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--color-accent)', fontFamily: 'monospace' }}>
+                    {stats.agents > 0 ? stats.agents : '0'}
+                  </div>
+                </div>
+              </motion.div>
 
             </div>
           </motion.div>

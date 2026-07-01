@@ -3,8 +3,8 @@ import json
 import uuid
 import urllib.request
 import urllib.error
-from typing import List
-from models.schemas import WorkflowNode
+from typing import List, Tuple
+from models.schemas import WorkflowNode, Agent
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -50,38 +50,46 @@ class LLMClient:
 
 
     @staticmethod
-    def generate_workflow_from_intent(intent: str) -> List[WorkflowNode]:
+    def generate_workflow_from_intent(intent: str) -> Tuple[List[WorkflowNode], List[Agent]]:
         prompt = f"""
 You are an intelligent workflow orchestration engine.
 The user has provided the following intent: "{intent}"
 
 Generate a Directed Acyclic Graph (DAG) representing the sequence of operations required to fulfill this intent.
+Also, explicitly list the specialized AI "Agents" that must be spawned to execute these operations.
 
-Output exactly valid JSON representing a list of nodes. No markdown wrapping.
+Output exactly valid JSON representing a dictionary with "nodes" and "agents". No markdown wrapping.
 Example structure:
-[
-  {{
-    "id": "node_123",
-    "type": "trigger",
-    "name": "Wait for trigger event",
-    "metadata": {{"key": "value"}}
-  }},
-  {{
-    "id": "node_456",
-    "type": "action",
-    "name": "Perform an action",
-    "metadata": {{}}
-  }}
-]
+{{
+  "nodes": [
+    {{
+      "id": "node_123",
+      "type": "trigger",
+      "name": "Wait for trigger event",
+      "metadata": {{"key": "value"}}
+    }}
+  ],
+  "agents": [
+    {{
+      "id": "agent_abc",
+      "name": "Email Parsing Agent",
+      "role": "Data Extraction",
+      "description": "Extracts invoices and sentiment from incoming emails."
+    }}
+  ]
+}}
 """
         try:
             raw_text = LLMClient._call_gemini(prompt, json_mode=True)
-            nodes_data = json.loads(raw_text)
+            data = json.loads(raw_text)
+            
+            if "error" in data:
+                return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="API Error", metadata={"error": data["error"]})], []
+
+            nodes_data = data.get("nodes", [])
+            agents_data = data.get("agents", [])
             
             nodes = []
-            if isinstance(nodes_data, dict) and "error" in nodes_data:
-                return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="API Error", metadata={"error": nodes_data["error"]})]
-
             for item in nodes_data:
                 metadata = item.get("metadata", {})
                 node = WorkflowNode(
@@ -92,11 +100,21 @@ Example structure:
                 )
                 nodes.append(node)
                 
-            return nodes
+            agents = []
+            for item in agents_data:
+                agent = Agent(
+                    id=item.get("id", f"agent_{uuid.uuid4().hex[:6]}"),
+                    name=item.get("name", "Generic Agent"),
+                    role=item.get("role", "Execution"),
+                    description=item.get("description", "Executes tasks.")
+                )
+                agents.append(agent)
+                
+            return nodes, agents
 
         except Exception as e:
             print(f"[ERROR] LLM Workflow Generation Failed: {e}")
-            return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="LLM Error", metadata={"error": str(e)})]
+            return [WorkflowNode(id=f"node_{uuid.uuid4().hex[:6]}", type="action", name="LLM Error", metadata={"error": str(e)})], []
 
     @staticmethod
     def execute_action(action_name: str, intent: str, previous_context: str = "") -> str:

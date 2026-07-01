@@ -13,13 +13,14 @@ class Orchestrator:
         """
         workflow_id = f"wf_{uuid.uuid4().hex[:8]}"
         
-        nodes = LLMClient.generate_workflow_from_intent(intent)
+        nodes, agents = LLMClient.generate_workflow_from_intent(intent)
         execution_logs = ExecutionEngine.run(intent, nodes)
         
         return DeployResponse(
             status="success",
             workflow_id=workflow_id,
             nodes=nodes,
+            agents=agents,
             execution_logs=execution_logs,
             message="DAG compiled and executed successfully via Gemini 2.5 Flash."
         )

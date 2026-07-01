@@ -63,6 +63,25 @@ export default function Dashboard() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+          <Link href="/agents" passHref style={{ textDecoration: "none" }}>
+            <motion.button
+              whileHover={{ y: -2 }}
+              style={{
+                background: "transparent",
+                border: "1px solid var(--color-accent)",
+                borderRadius: "4px",
+                padding: "0.5rem 1rem",
+                color: "var(--color-accent)",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "monospace",
+                fontSize: "0.9rem"
+              }}
+            >
+              [⚡] AGENT FLEET
+            </motion.button>
+          </Link>
+
           <Link href="/integrations" passHref style={{ textDecoration: "none" }}>
             <motion.button
               whileHover={{ y: -2 }}
