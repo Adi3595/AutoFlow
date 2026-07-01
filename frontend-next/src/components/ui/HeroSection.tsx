@@ -115,17 +115,23 @@ export function HeroSection() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start', width: '100%' }}>
               
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                background: 'rgba(0,0,0,0.5)', 
-                border: '1px solid rgba(178, 213, 229, 0.2)', 
-                borderRadius: '8px',
-                padding: '0.5rem 1rem',
-                width: '100%',
-                maxWidth: '500px'
-              }}>
-                <Command size={18} style={{ color: 'rgba(255,255,255,0.4)', marginRight: '0.8rem' }} />
+              <motion.div 
+                whileHover={{ boxShadow: '0 0 25px rgba(178, 213, 229, 0.15)' }}
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  background: 'rgba(5, 10, 15, 0.8)', 
+                  border: '1px solid rgba(178, 213, 229, 0.3)', 
+                  borderRadius: '50px',
+                  padding: '0.5rem 0.5rem 0.5rem 1.5rem',
+                  width: '100%',
+                  maxWidth: '650px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                  backdropFilter: 'blur(10px)',
+                  transition: 'box-shadow 0.3s ease'
+                }}
+              >
+                <Command size={22} style={{ color: 'var(--color-accent)', marginRight: '1rem' }} />
                 <input 
                   type="text" 
                   placeholder="e.g. Analyze user sentiment and draft an email..." 
@@ -137,17 +143,79 @@ export function HeroSection() {
                     color: 'white',
                     width: '100%',
                     fontFamily: 'var(--font-primary), sans-serif',
-                    fontSize: '1rem',
+                    fontSize: '1.1rem',
                     outline: 'none'
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !isDeploying) {
+                      document.getElementById('btn-deploy-os')?.click();
+                    }
+                  }}
                 />
-              </div>
+                <motion.button 
+                  id="btn-deploy-os"
+                  onClick={async () => {
+                    if (!intent.trim()) return;
+                    setIsDeploying(true);
+                    try {
+                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+                      const response = await fetch(`${apiUrl}/api/workflows/deploy`, {
+                        method: "POST",
+                        headers: { 
+                          "Content-Type": "application/json",
+                          "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "af_dev_secret_99"
+                        },
+                        body: JSON.stringify({ intent: intent })
+                      });
+                      const data = await response.json();
+                      if (data.status === "success") {
+                        // Save to local storage for dashboard
+                        localStorage.setItem("autoflow_deployed_nodes", JSON.stringify(data.nodes || []));
+                        localStorage.setItem("autoflow_execution_logs", JSON.stringify(data.execution_logs || []));
+                        
+                        // Save Memory Engine History
+                        const pastHistory = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
+                        localStorage.setItem("autoflow_history", JSON.stringify([intent, ...pastHistory.slice(0, 4)]));
+                        
+                        // Route to dashboard
+                        router.push('/dashboard');
+                      }
+                    } catch (e) {
+                      console.error(e);
+                    } finally {
+                      setIsDeploying(false);
+                    }
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={isDeploying}
+                  style={{
+                    background: 'var(--color-accent)',
+                    color: '#020202',
+                    border: 'none',
+                    padding: '0.8rem 1.8rem',
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    borderRadius: '50px',
+                    cursor: isDeploying ? 'wait' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginLeft: '1rem',
+                    opacity: isDeploying ? 0.7 : 1,
+                    flexShrink: 0
+                  }}
+                >
+                  {isDeploying ? 'Deploying...' : 'Deploy'} 
+                  {isDeploying ? <Loader2 size={18} className="animate-spin" /> : <ArrowUpRight size={18} />}
+                </motion.button>
+              </motion.div>
 
               {/* Predictive Automation Suggestions */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginTop: '1rem', maxWidth: '650px' }}>
                 {PREDICTIVE_SUGGESTIONS.map((suggestion, idx) => (
                   <motion.button 
-                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(178, 213, 229, 0.1)' }}
+                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(178, 213, 229, 0.15)' }}
                     whileTap={{ scale: 0.98 }}
                     key={idx}
                     onClick={() => setIntent(suggestion)}
@@ -155,74 +223,19 @@ export function HeroSection() {
                       background: 'rgba(178, 213, 229, 0.05)',
                       border: '1px solid rgba(178, 213, 229, 0.2)',
                       borderRadius: '50px',
-                      padding: '0.4rem 0.8rem',
-                      fontSize: '0.8rem',
-                      color: 'var(--color-accent)',
+                      padding: '0.5rem 1rem',
+                      fontSize: '0.85rem',
+                      color: 'rgba(255,255,255,0.8)',
                       cursor: 'pointer',
-                      fontFamily: 'monospace'
+                      fontFamily: 'monospace',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    + {suggestion}
+                    <span style={{ color: 'var(--color-accent)', marginRight: '0.5rem' }}>+</span> 
+                    {suggestion}
                   </motion.button>
                 ))}
               </div>
-
-              <motion.button 
-                onClick={async () => {
-                  if (!intent.trim()) return;
-                  setIsDeploying(true);
-                  try {
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-                    const response = await fetch(`${apiUrl}/api/workflows/deploy`, {
-                      method: "POST",
-                      headers: { 
-                        "Content-Type": "application/json",
-                        "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "af_dev_secret_99"
-                      },
-                      body: JSON.stringify({ intent: intent })
-                    });
-                    const data = await response.json();
-                    if (data.status === "success") {
-                      // Save to local storage for dashboard
-                      localStorage.setItem("autoflow_deployed_nodes", JSON.stringify(data.nodes || []));
-                      localStorage.setItem("autoflow_execution_logs", JSON.stringify(data.execution_logs || []));
-                      
-                      // Save Memory Engine History
-                      const pastHistory = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
-                      localStorage.setItem("autoflow_history", JSON.stringify([intent, ...pastHistory.slice(0, 4)]));
-                      
-                      // Route to dashboard
-                      router.push('/dashboard');
-                    }
-                  } catch (e) {
-                    console.error(e);
-                  } finally {
-                    setIsDeploying(false);
-                  }
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                disabled={isDeploying}
-                id="btn-deploy-os"
-                style={{
-                  background: 'var(--color-accent)',
-                  color: '#020202',
-                  border: 'none',
-                  padding: '1.4rem 3.5rem',
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
-                  borderRadius: '50px',
-                  cursor: isDeploying ? 'wait' : 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  boxShadow: '0 10px 30px rgba(178, 213, 229, 0.2)',
-                  opacity: isDeploying ? 0.7 : 1
-                }}
-              >
-                {isDeploying ? 'Deploying...' : 'Deploy'} 
-                {isDeploying ? <Loader2 size={20} className="animate-spin" /> : <ArrowUpRight size={20} />}
-              </motion.button>
 
 
             </div>
