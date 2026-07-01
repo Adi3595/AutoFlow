@@ -26,8 +26,8 @@ const nodeStyle = {
 };
 
 export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([]);
 
   useEffect(() => {
     if (!workflowData || workflowData.length === 0) return;
