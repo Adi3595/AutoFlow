@@ -1,162 +1,112 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-
-class Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  color: string;
-  canvasWidth: number;
-  canvasHeight: number;
-
-  constructor(cw: number, ch: number) {
-    this.canvasWidth = cw;
-    this.canvasHeight = ch;
-    this.x = Math.random() * cw;
-    this.y = Math.random() * ch;
-    this.vx = (Math.random() - 0.5) * 0.5;
-    this.vy = (Math.random() - 0.5) * 0.5;
-    this.size = Math.random() * 2 + 1;
-    this.color = `rgba(178, 213, 229, ${Math.random() * 0.5 + 0.1})`;
-  }
-
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-
-    if (this.x < 0 || this.x > this.canvasWidth) this.vx *= -1;
-    if (this.y < 0 || this.y > this.canvasHeight) this.vy *= -1;
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-  }
-}
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export function InteractiveBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    const particles: Particle[] = [];
-    const particleCount = Math.min(Math.floor((width * height) / 12000), 100);
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle(width, height));
-    }
-
-    let mouse = { x: -1000, y: -1000 };
-
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    };
-    
-    const handleMouseLeave = () => {
-      mouse.x = -1000;
-      mouse.y = -1000;
+      setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
-    
-    const handleResize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      particles.forEach(p => {
-        p.canvasWidth = width;
-        p.canvasHeight = height;
-      });
-    };
-    window.addEventListener("resize", handleResize);
-
-    let animationFrameId: number;
-
-    const animate = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw(ctx);
-
-        // Draw connections between particles
-        for (let j = i; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 120) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(178, 213, 229, ${0.15 - distance / 120 * 0.15})`;
-            ctx.lineWidth = 1;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-
-        // Draw connections to mouse
-        const mouseDx = particles[i].x - mouse.x;
-        const mouseDy = particles[i].y - mouse.y;
-        const mouseDistance = Math.sqrt(mouseDx * mouseDx + mouseDy * mouseDy);
-
-        if (mouseDistance < 150) {
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(178, 213, 229, ${0.3 - mouseDistance / 150 * 0.3})`;
-          ctx.lineWidth = 1.5;
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
-          
-          // Slight attraction to mouse
-          particles[i].x -= mouseDx * 0.01;
-          particles[i].y -= mouseDy * 0.01;
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        zIndex: 0,
-        background: "transparent"
-      }}
-    />
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      overflow: "hidden",
+      pointerEvents: "none",
+      zIndex: 0,
+      background: "var(--color-bg)"
+    }}>
+      {/* Orb 1: Core Blue/Cyan */}
+      <motion.div
+        animate={{
+          x: [0, 50, -50, 0],
+          y: [0, -50, 50, 0],
+          scale: [1, 1.1, 0.9, 1],
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        style={{
+          position: "absolute",
+          top: "10%",
+          left: "20%",
+          width: "40vw",
+          height: "40vw",
+          background: "radial-gradient(circle, rgba(178,213,229,0.15) 0%, transparent 60%)",
+          filter: "blur(60px)",
+          borderRadius: "50%",
+        }}
+      />
+
+      {/* Orb 2: Deep Indigo */}
+      <motion.div
+        animate={{
+          x: [0, -100, 50, 0],
+          y: [0, 50, -100, 0],
+          scale: [1, 1.2, 0.8, 1],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        style={{
+          position: "absolute",
+          top: "40%",
+          left: "60%",
+          width: "50vw",
+          height: "50vw",
+          background: "radial-gradient(circle, rgba(93,124,196,0.1) 0%, transparent 60%)",
+          filter: "blur(80px)",
+          borderRadius: "50%",
+        }}
+      />
+
+      {/* Orb 3: Subtle Purple/Pink */}
+      <motion.div
+        animate={{
+          x: [0, 80, -80, 0],
+          y: [0, 80, -80, 0],
+          scale: [1, 0.9, 1.1, 1],
+        }}
+        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        style={{
+          position: "absolute",
+          top: "60%",
+          left: "10%",
+          width: "45vw",
+          height: "45vw",
+          background: "radial-gradient(circle, rgba(144,98,206,0.08) 0%, transparent 60%)",
+          filter: "blur(70px)",
+          borderRadius: "50%",
+        }}
+      />
+
+      {/* Mouse Follower Light */}
+      <motion.div
+        animate={{
+          x: mousePosition.x - (typeof window !== "undefined" ? window.innerWidth / 2 : 0),
+          y: mousePosition.y - (typeof window !== "undefined" ? window.innerHeight / 2 : 0),
+        }}
+        transition={{ type: "spring", damping: 40, stiffness: 100, mass: 0.5 }}
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          width: "30vw",
+          height: "30vw",
+          marginLeft: "-15vw",
+          marginTop: "-15vw",
+          background: "radial-gradient(circle, rgba(178,213,229,0.08) 0%, transparent 50%)",
+          filter: "blur(40px)",
+          borderRadius: "50%",
+        }}
+      />
+    </div>
   );
 }
