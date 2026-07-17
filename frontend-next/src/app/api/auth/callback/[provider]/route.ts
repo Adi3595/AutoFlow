@@ -61,6 +61,93 @@ export async function GET(
       // Slack provides authed_user.access_token for user scopes
       accessToken = data.authed_user?.access_token || data.access_token;
       
+    } else if (provider === 'notion') {
+      const clientId = process.env.NEXT_PUBLIC_NOTION_CLIENT_ID;
+      const clientSecret = process.env.NOTION_CLIENT_SECRET;
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+      const redirectUri = `${baseUrl}/api/auth/callback/notion`;
+      
+      const authHeader = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+      
+      const res = await fetch('https://api.notion.com/v1/oauth/token', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${authHeader}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          grant_type: 'authorization_code',
+          code,
+          redirect_uri: redirectUri
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      accessToken = data.access_token;
+      
+    } else if (provider === 'gmail') {
+      const clientId = process.env.NEXT_PUBLIC_GMAIL_CLIENT_ID;
+      const clientSecret = process.env.GMAIL_CLIENT_SECRET;
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+      const redirectUri = `${baseUrl}/api/auth/callback/gmail`;
+      
+      const res = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code,
+          grant_type: 'authorization_code',
+          redirect_uri: redirectUri
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error_description || data.error);
+      accessToken = data.access_token;
+      
+    } else if (provider === 'jira') {
+      const clientId = process.env.NEXT_PUBLIC_JIRA_CLIENT_ID;
+      const clientSecret = process.env.JIRA_CLIENT_SECRET;
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+      const redirectUri = `${baseUrl}/api/auth/callback/jira`;
+      
+      const res = await fetch('https://auth.atlassian.com/oauth/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code,
+          grant_type: 'authorization_code',
+          redirect_uri: redirectUri
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error_description || data.error);
+      accessToken = data.access_token;
+      
+    } else if (provider === 'salesforce') {
+      const clientId = process.env.NEXT_PUBLIC_SALESFORCE_CLIENT_ID;
+      const clientSecret = process.env.SALESFORCE_CLIENT_SECRET;
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+      const redirectUri = `${baseUrl}/api/auth/callback/salesforce`;
+      
+      const res = await fetch('https://login.salesforce.com/services/oauth2/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: clientId || '',
+          client_secret: clientSecret || '',
+          code,
+          redirect_uri: redirectUri
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error_description || data.error);
+      accessToken = data.access_token;
+      
     } else {
       return NextResponse.json({ error: 'Unsupported provider' }, { status: 400 });
     }
