@@ -179,7 +179,7 @@ export default function WorkflowCanvas({ workflowData }: { workflowData: any[] }
       >
         <Controls style={{ background: '#0a0a0a', color: '#fff', border: '1px solid #222' }} />
         <MiniMap
-          nodeColor={(n) => getColor(n.nodeType as string)}
+          nodeColor={(n) => getColor((n as any).nodeType as string)}
           maskColor="rgba(0,0,0,0.85)"
           style={{ background: '#0a0a0a', border: '1px solid #222' }}
         />

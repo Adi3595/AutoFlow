@@ -182,13 +182,19 @@ export function HeroSection() {
                       });
                       const data = await response.json();
                       if (data.status === "success") {
-                        // Build the full workflow record
+                        // Build the full enriched workflow record
                         const newWorkflow = {
                           id: data.workflow_id || `wf_${Date.now()}`,
                           intent: intent,
                           createdAt: new Date().toISOString(),
                           nodes: data.nodes || [],
                           agents: data.agents || [],
+                          // New enriched fields — persist all panel data
+                          execution_logs: data.execution_logs || [],
+                          explanation: data.explanation || null,
+                          simulation: data.simulation || null,
+                          suggestions: data.suggestions || null,
+                          documentation: data.documentation || null,
                         };
 
                         // Prepend to the persistent workflows list
