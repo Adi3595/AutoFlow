@@ -178,7 +178,7 @@ export function HeroSection() {
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
           style={{ 
             color: 'rgba(255, 255, 255, 0.5)', 
             fontSize: '1.25rem', 
@@ -195,7 +195,7 @@ export function HeroSection() {
           style={{ y: inputY, flex: '1 1 500px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+          transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
         >
           <div style={{
             width: '100%',

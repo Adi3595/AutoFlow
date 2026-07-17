@@ -9,12 +9,12 @@ export function MechBootOverlay() {
 
   useEffect(() => {
     // Sequence text
-    const t1 = setTimeout(() => setTextStage(1), 400);
-    const t2 = setTimeout(() => setTextStage(2), 800);
-    const t3 = setTimeout(() => setTextStage(3), 1200);
+    const t1 = setTimeout(() => setTextStage(1), 150);
+    const t2 = setTimeout(() => setTextStage(2), 300);
+    const t3 = setTimeout(() => setTextStage(3), 450);
     
     // Trigger open
-    const t4 = setTimeout(() => setBooted(true), 2000);
+    const t4 = setTimeout(() => setBooted(true), 600);
     
     return () => {
       clearTimeout(t1);
@@ -31,7 +31,7 @@ export function MechBootOverlay() {
           key="mech-overlay"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.1, delay: 0.8 }} // Wait for doors to open before unmounting
+          transition={{ duration: 0.1, delay: 0.4 }} // Wait for doors to open before unmounting
           style={{
             position: "fixed",
             top: 0,
