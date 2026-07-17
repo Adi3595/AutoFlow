@@ -235,7 +235,7 @@ Do not wrap your response in markdown. Just return the pure text result of the e
     # ─── Feature 1: AI Workflow Explanation ───────────────────────
     @staticmethod
     def generate_explanation(intent: str, nodes: list) -> str:
-        node_names = [getattr(n, 'name', n.get('name', '')) for n in nodes]
+        node_names = [getattr(n, 'name', n.get('name', '') if isinstance(n, dict) else '') for n in nodes]
         steps_text = "\n".join(f"  {i+1}. {name}" for i, name in enumerate(node_names))
         prompt = f"""
 You are AutoFlow, an AI workflow operating system.
@@ -254,7 +254,7 @@ Return plain text only.
     # ─── Feature 2: Workflow Simulation ───────────────────────────
     @staticmethod
     def generate_simulation(intent: str, nodes: list) -> dict:
-        node_list = [{"id": getattr(n,'id',n.get('id','')), "name": getattr(n,'name',n.get('name','')), "type": getattr(n,'type',n.get('type','')), "tool": (getattr(n,'metadata',{}) or n.get('metadata',{})).get("tool","")} for n in nodes]
+        node_list = [{"id": getattr(n, 'id', n.get('id', '') if isinstance(n, dict) else ''), "name": getattr(n, 'name', n.get('name', '') if isinstance(n, dict) else ''), "type": getattr(n, 'type', n.get('type', '') if isinstance(n, dict) else ''), "tool": (getattr(n, 'metadata', {}) or (n.get('metadata', {}) if isinstance(n, dict) else {})).get("tool", "")} for n in nodes]
         prompt = f"""
 You are an AI workflow simulator. Analyze this workflow for: "{intent}"
 Nodes: {json.dumps(node_list)}
@@ -271,7 +271,7 @@ Generate realistic estimates and 1-3 actionable warnings.
     # ─── Feature 4: AI Suggestions ────────────────────────────────
     @staticmethod
     def generate_suggestions(intent: str, nodes: list) -> list:
-        node_names = [getattr(n, 'name', n.get('name', '')) for n in nodes]
+        node_names = [getattr(n, 'name', n.get('name', '') if isinstance(n, dict) else '') for n in nodes]
         prompt = f"""
 You are an AI workflow consultant reviewing automation for: "{intent}"
 Current nodes: {json.dumps(node_names)}
@@ -289,8 +289,8 @@ Make suggestions specific to this workflow.
     # ─── Feature 15: Auto Documentation ───────────────────────────
     @staticmethod
     def generate_documentation(intent: str, nodes: list, agents: list) -> dict:
-        node_data = [{"id": getattr(n,'id',n.get('id','')), "name": getattr(n,'name',n.get('name','')), "type": getattr(n,'type',n.get('type','')), "tool": (getattr(n,'metadata',{}) or {}).get("tool","")} for n in nodes]
-        agent_names = [getattr(a,'name',a.get('name','')) for a in agents]
+        node_data = [{"id": getattr(n, 'id', n.get('id', '') if isinstance(n, dict) else ''), "name": getattr(n, 'name', n.get('name', '') if isinstance(n, dict) else ''), "type": getattr(n, 'type', n.get('type', '') if isinstance(n, dict) else ''), "tool": (getattr(n, 'metadata', {}) or {}).get("tool", "")} for n in nodes]
+        agent_names = [getattr(a, 'name', a.get('name', '') if isinstance(a, dict) else '') for a in agents]
         prompt = f"""
 Generate workflow documentation for: "{intent}"
 Nodes: {json.dumps(node_data[:8])} Agents: {json.dumps(agent_names)}
