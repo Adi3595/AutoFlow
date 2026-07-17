@@ -6,27 +6,38 @@ import urllib.error
 from typing import List, Tuple
 from models.schemas import WorkflowNode, Agent
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 class LLMClient:
     
     @staticmethod
     def _call_gemini(prompt: str, json_mode: bool = False) -> str:
-        if not GEMINI_API_KEY or GEMINI_API_KEY == "your_gemini_key_here":
-            return '{"error": "GEMINI_API_KEY not found"}' if json_mode else "ERROR: GEMINI_API_KEY not found"
+        """
+        Kept the method name _call_gemini so we don't have to rename all calls, 
+        but we are actually using Groq for massive rate-limit bypassing.
+        """
+        if not GROQ_API_KEY or GROQ_API_KEY == "your_groq_key_here":
+            return '{"error": "GROQ_API_KEY not found"}' if json_mode else "ERROR: GROQ_API_KEY not found"
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+        url = "https://api.groq.com/openai/v1/chat/completions"
         
         payload = {
-            "contents": [{"parts": [{"text": prompt}]}]
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2
         }
         if json_mode:
-            payload["generationConfig"] = {"responseMimeType": "application/json"}
+            payload["response_format"] = {"type": "json_object"}
+            # Groq requires the prompt to explicitly mention JSON if response_format is set
+            payload["messages"][0]["content"] += "\nEnsure you output in valid JSON."
         
         req = urllib.request.Request(
             url,
             data=json.dumps(payload).encode('utf-8'),
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {GROQ_API_KEY}'
+            },
             method='POST'
         )
         
@@ -34,7 +45,7 @@ class LLMClient:
             with urllib.request.urlopen(req) as response:
                 result_json = json.loads(response.read().decode('utf-8'))
                 
-            raw_text = result_json['candidates'][0]['content']['parts'][0]['text'].strip()
+            raw_text = result_json['choices'][0]['message']['content'].strip()
             
             if json_mode:
                 if raw_text.startswith("```json"):
