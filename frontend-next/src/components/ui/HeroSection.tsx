@@ -52,9 +52,12 @@ export function HeroSection() {
         localStorage.setItem("autoflow_agents", JSON.stringify([...newWorkflow.agents, ...existingAgents]));
         
         router.push('/dashboard');
+      } else {
+        alert("Deployment failed: " + (data.detail || data.message || "Unknown error"));
       }
     } catch (e) {
       console.error(e);
+      alert("Deployment failed: " + (e as Error).message);
     } finally {
       setIsDeploying(false);
     }
