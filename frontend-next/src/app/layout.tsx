@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 
 import { InteractiveBackground } from "@/components/ui/InteractiveBackground";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { MechBootOverlay } from "@/components/ui/MechBootOverlay";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <MechBootOverlay />
         <CustomCursor />
         <InteractiveBackground />
         {children}
