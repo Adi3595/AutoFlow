@@ -2,6 +2,7 @@ import random
 from typing import List
 from models.schemas import WorkflowNode
 from agents.universal_agent import UniversalAgent
+from integrations.registry import IntegrationRegistry
 
 class ExecutionEngine:
     @staticmethod
@@ -18,8 +19,20 @@ class ExecutionEngine:
                 # For hackathon demo purposes, artificially force a failure 20% of the time to demonstrate self-healing
                 if random.random() < 0.2:
                     raise Exception("ECONNREFUSED: Connection to upstream API timed out.")
-                    
-                result = UniversalAgent.execute(node_name=node.name, intent=intent, context=context)
+                
+                # Check if we have a real integration for this tool
+                # Safely get tool from metadata
+                metadata = getattr(node, 'metadata', {})
+                tool_name = metadata.get("tool", "") if isinstance(metadata, dict) else ""
+                
+                integration = IntegrationRegistry.get_integration(tool_name)
+                
+                if integration:
+                    execution_logs.append(f"  └── [SYSTEM] Routing to Real API Integration for '{tool_name}'...")
+                    result = integration.execute(action_name=node.name, intent=intent, previous_context=context)
+                else:
+                    # Fallback to simulation
+                    result = UniversalAgent.execute(node_name=node.name, intent=intent, context=context)
                 
                 # Truncate very long outputs for the terminal UI
                 short_result = result if len(result) < 300 else result[:300] + "... [truncated]"
