@@ -172,10 +172,10 @@ export function HeroSection() {
         style={{ 
           color: 'rgba(255, 255, 255, 0.5)', 
           fontSize: '1.25rem', 
-          maxWidth: '450px', 
+          maxWidth: '600px', 
           lineHeight: 1.6,
           marginTop: '1rem',
-          paddingLeft: '20vw'
+          paddingLeft: '10vw'
         }}
       >
         A revolutionary canvas that translates your natural language directly into self-healing, autonomous backend architecture.

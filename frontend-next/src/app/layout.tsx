@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 };
 
 import { InteractiveBackground } from "@/components/ui/InteractiveBackground";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 
 export default function RootLayout({
   children,
@@ -38,6 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <CustomCursor />
         <InteractiveBackground />
         {children}
       </body>
