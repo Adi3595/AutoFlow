@@ -22,13 +22,21 @@ export function HeroSection() {
     setIsDeploying(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      
+      // Load any OAuth tokens saved from the Integrations page
+      const credentials: Record<string, string> = {};
+      const githubToken = localStorage.getItem('autoflow_token_github');
+      const slackToken = localStorage.getItem('autoflow_token_slack');
+      if (githubToken) credentials['GITHUB_API_KEY'] = githubToken;
+      if (slackToken) credentials['SLACK_API_KEY'] = slackToken;
+
       const response = await fetch(`${apiUrl}/api/workflows/deploy`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
           "X-API-Key": process.env.NEXT_PUBLIC_API_KEY || "af_dev_secret_99"
         },
-        body: JSON.stringify({ intent: intent })
+        body: JSON.stringify({ intent: intent, credentials: credentials })
       });
       const data = await response.json();
       if (data.status === "success") {

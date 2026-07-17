@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional
 
 class DeployRequest(BaseModel):
     intent: str = Field(..., min_length=10, max_length=2000, description="Natural language intent describing the desired workflow")
+    credentials: Optional[Dict[str, str]] = Field(default_factory=dict)
 
 class EditRequest(BaseModel):
     workflow_id: str

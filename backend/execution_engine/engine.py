@@ -6,7 +6,8 @@ from integrations.registry import IntegrationRegistry
 
 class ExecutionEngine:
     @staticmethod
-    def run(intent: str, nodes: List[WorkflowNode]) -> List[str]:
+    def run(intent: str, nodes: List[WorkflowNode], credentials: dict = None) -> List[str]:
+        credentials = credentials or {}
         execution_logs = []
         context = ""
         
@@ -29,7 +30,7 @@ class ExecutionEngine:
                 
                 if integration:
                     execution_logs.append(f"  └── [SYSTEM] Routing to Real API Integration for '{tool_name}'...")
-                    result = integration.execute(action_name=node.name, intent=intent, previous_context=context)
+                    result = integration.execute(action_name=node.name, intent=intent, previous_context=context, credentials=credentials)
                 else:
                     # Fallback to simulation
                     result = UniversalAgent.execute(node_name=node.name, intent=intent, context=context)

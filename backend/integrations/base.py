@@ -6,7 +6,7 @@ class BaseIntegration(ABC):
     """
     
     @abstractmethod
-    def execute(self, action_name: str, intent: str, previous_context: str = "") -> str:
+    def execute(self, action_name: str, intent: str, previous_context: str = "", credentials: dict = None) -> str:
         """
         Translates the action description into concrete API calls and executes them.
         Returns a string representation of the execution result.

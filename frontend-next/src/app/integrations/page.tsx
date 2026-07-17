@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft, Terminal, CheckCircle2, Loader2, Link2 } from "lucide-react";
@@ -18,16 +18,59 @@ export default function IntegrationsPage() {
   const [connecting, setConnecting] = useState<string | null>(null);
   const [connected, setConnected] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    // Check which apps are connected based on localStorage
+    const newConnected: Record<string, boolean> = {};
+    APPS.forEach(app => {
+      if (localStorage.getItem(`autoflow_token_${app.id}`)) {
+        newConnected[app.id] = true;
+      }
+    });
+    setConnected(newConnected);
+
+    // Listen for OAuth messages from the popup window
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'OAUTH_CALLBACK') {
+        const { provider, token } = event.data;
+        if (token) {
+          setConnected(prev => ({ ...prev, [provider]: true }));
+          setConnecting(null);
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   const handleConnect = (id: string) => {
+    // Currently only Slack and GitHub are implemented for True OAuth
+    if (id !== 'slack' && id !== 'github') {
+      alert(`${id} OAuth integration is coming soon! For now, only GitHub and Slack are supported.`);
+      return;
+    }
+    
     setConnecting(id);
-    // Simulate OAuth flow
+    
+    // Open popup for OAuth
+    const width = 600;
+    const height = 700;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    
+    window.open(
+      `/api/auth/${id}`,
+      `Connect ${id}`,
+      `width=${width},height=${height},left=${left},top=${top}`
+    );
+    
+    // If popup is blocked or closed, we reset state after 2 minutes
     setTimeout(() => {
       setConnecting(null);
-      setConnected(prev => ({ ...prev, [id]: true }));
-    }, 1500);
+    }, 120000);
   };
 
   const handleDisconnect = (id: string) => {
+    localStorage.removeItem(`autoflow_token_${id}`);
     setConnected(prev => ({ ...prev, [id]: false }));
   };
 

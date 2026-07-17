@@ -6,8 +6,9 @@ from integrations.base import BaseIntegration
 from services.llm_client import LLMClient
 
 class GitHubIntegration(BaseIntegration):
-    def execute(self, action_name: str, intent: str, previous_context: str = "") -> str:
-        api_key = os.getenv("GITHUB_API_KEY")
+    def execute(self, action_name: str, intent: str, previous_context: str = "", credentials: dict = None) -> str:
+        credentials = credentials or {}
+        api_key = credentials.get("GITHUB_API_KEY") or os.getenv("GITHUB_API_KEY")
         if not api_key:
             return f"[SIMULATED] (GITHUB_API_KEY not found). Executed: {action_name}"
 

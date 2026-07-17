@@ -10,16 +10,17 @@ from execution_engine.engine import ExecutionEngine
 class Orchestrator:
 
     @staticmethod
-    def parse_intent_to_graph(intent: str) -> DeployResponse:
+    def parse_intent_to_graph(intent: str, credentials: dict = None) -> DeployResponse:
         """
         Calls Gemini to parse intent into a structured execution DAG,
         runs it, and enriches the response with explanation, simulation,
         suggestions, and auto-documentation.
         """
+        credentials = credentials or {}
         workflow_id = f"wf_{uuid.uuid4().hex[:8]}"
 
         nodes, agents = LLMClient.generate_workflow_from_intent(intent)
-        execution_logs = ExecutionEngine.run(intent, nodes)
+        execution_logs = ExecutionEngine.run(intent, nodes, credentials)
 
         # Enrich response with all new AI features (non-blocking — fallback on error)
         explanation = LLMClient.generate_explanation(intent, nodes)

@@ -16,7 +16,7 @@ async def deploy_workflow(request: Request, payload: DeployRequest):
     Protected by X-API-Key and Rate Limiting.
     """
     try:
-        response = Orchestrator.parse_intent_to_graph(payload.intent)
+        response = Orchestrator.parse_intent_to_graph(payload.intent, payload.credentials)
         return response
     except Exception as e:
         return JSONResponse(status_code=500, content={"detail": f"Backend Error: {str(e)}"})
