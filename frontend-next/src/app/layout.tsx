@@ -28,6 +28,8 @@ export const metadata: Metadata = {
   }
 };
 
+import { InteractiveBackground } from "@/components/ui/InteractiveBackground";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,7 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <InteractiveBackground />
+        {children}
+      </body>
     </html>
   );
 }

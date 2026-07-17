@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/ui/HeroSection";
 import { FeaturesSection } from "@/components/ui/FeaturesSection";
 import { HowItWorksSection } from "@/components/ui/HowItWorksSection";
+import { UseCasesSection } from "@/components/ui/UseCasesSection";
 import { EcosystemSection } from "@/components/ui/EcosystemSection";
 import { DashboardPreview } from "@/components/ui/DashboardPreview";
 import { PricingSection } from "@/components/ui/PricingSection";
@@ -16,6 +17,7 @@ export default function Home() {
         <HeroSection />
         <FeaturesSection />
         <HowItWorksSection />
+        <UseCasesSection />
         <EcosystemSection />
         <DashboardPreview />
         <PricingSection />
