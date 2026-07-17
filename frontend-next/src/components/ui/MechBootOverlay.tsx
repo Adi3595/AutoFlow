@@ -9,12 +9,12 @@ export function MechBootOverlay() {
 
   useEffect(() => {
     // Sequence text
-    const t1 = setTimeout(() => setTextStage(1), 150);
-    const t2 = setTimeout(() => setTextStage(2), 300);
-    const t3 = setTimeout(() => setTextStage(3), 450);
+    const t1 = setTimeout(() => setTextStage(1), 400);
+    const t2 = setTimeout(() => setTextStage(2), 800);
+    const t3 = setTimeout(() => setTextStage(3), 1200);
     
     // Trigger open
-    const t4 = setTimeout(() => setBooted(true), 600);
+    const t4 = setTimeout(() => setBooted(true), 2500);
     
     return () => {
       clearTimeout(t1);
@@ -31,7 +31,7 @@ export function MechBootOverlay() {
           key="mech-overlay"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.1, delay: 0.4 }} // Wait for doors to open before unmounting
+          transition={{ duration: 0.1, delay: 1.5 }} // Wait for doors to open before unmounting
           style={{
             position: "fixed",
             top: 0,
@@ -47,8 +47,8 @@ export function MechBootOverlay() {
           {/* Top Blast Door */}
           <motion.div
             initial={{ y: "0%" }}
-            exit={{ y: "-100%" }}
-            transition={{ type: "spring", stiffness: 70, damping: 15, delay: 0.1 }}
+            exit={{ y: "-100%", transition: { type: "spring", stiffness: 70, damping: 15, delay: 0.6 } }}
+            transition={{ type: "spring", stiffness: 70, damping: 15 }}
             style={{
               flex: 1,
               background: "#050a0f", // Dark metallic
@@ -67,8 +67,8 @@ export function MechBootOverlay() {
           {/* Bottom Blast Door */}
           <motion.div
             initial={{ y: "0%" }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 70, damping: 15, delay: 0.1 }}
+            exit={{ y: "100%", transition: { type: "spring", stiffness: 70, damping: 15, delay: 0.6 } }}
+            transition={{ type: "spring", stiffness: 70, damping: 15 }}
             style={{
               flex: 1,
               background: "#050a0f",
@@ -96,7 +96,7 @@ export function MechBootOverlay() {
              {/* Left Lock Bar */}
              <motion.div
                 initial={{ x: 0, opacity: 1 }}
-                exit={{ x: -100, opacity: 0 }}
+                exit={{ x: -100, opacity: 0, transition: { type: "spring", stiffness: 100, damping: 10, delay: 0.2 } }}
                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                 style={{
                    width: '100px',
@@ -112,7 +112,7 @@ export function MechBootOverlay() {
              {/* Central Rotating Hub */}
              <motion.div
                initial={{ rotate: 0, scale: 1, opacity: 1 }}
-               exit={{ rotate: 180, scale: 1.5, opacity: 0 }}
+               exit={{ rotate: 180, scale: 1.5, opacity: 0, transition: { duration: 0.4 } }}
                transition={{ duration: 0.4 }}
                style={{
                  width: '70px',
@@ -145,7 +145,7 @@ export function MechBootOverlay() {
              {/* Right Lock Bar */}
              <motion.div
                 initial={{ x: 0, opacity: 1 }}
-                exit={{ x: 100, opacity: 0 }}
+                exit={{ x: 100, opacity: 0, transition: { type: "spring", stiffness: 100, damping: 10, delay: 0.2 } }}
                 transition={{ type: "spring", stiffness: 100, damping: 10 }}
                 style={{
                    width: '100px',
