@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, Depends
+from fastapi.responses import JSONResponse
 from models.schemas import DeployRequest, DeployResponse, EditRequest, EditResponse, SimulateRequest
 from services.orchestrator import Orchestrator
 from core.security import limiter, verify_api_key
@@ -14,8 +15,11 @@ async def deploy_workflow(request: Request, payload: DeployRequest):
     workflow DAG enriched with explanation, simulation, suggestions, and docs.
     Protected by X-API-Key and Rate Limiting.
     """
-    response = Orchestrator.parse_intent_to_graph(payload.intent)
-    return response
+    try:
+        response = Orchestrator.parse_intent_to_graph(payload.intent)
+        return response
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"detail": f"Backend Error: {str(e)}"})
 
 
 @router.post("/edit", response_model=EditResponse, dependencies=[Depends(verify_api_key)])
