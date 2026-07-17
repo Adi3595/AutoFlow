@@ -165,44 +165,51 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      <motion.p 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        style={{ 
-          color: 'rgba(255, 255, 255, 0.5)', 
-          fontSize: '1.25rem', 
-          maxWidth: '600px', 
-          lineHeight: 1.6,
-          marginTop: '1rem',
-          paddingLeft: '10vw'
-        }}
-      >
-        A revolutionary canvas that translates your natural language directly into self-healing, autonomous backend architecture.
-      </motion.p>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingLeft: '10vw',
+        paddingRight: '10vw',
+        marginTop: '2rem',
+        gap: '4rem',
+        flexWrap: 'wrap'
+      }}>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          style={{ 
+            color: 'rgba(255, 255, 255, 0.5)', 
+            fontSize: '1.25rem', 
+            maxWidth: '500px', 
+            lineHeight: 1.6,
+            flex: '1 1 400px'
+          }}
+        >
+          A revolutionary canvas that translates your natural language directly into self-healing, autonomous backend architecture.
+        </motion.p>
 
-      {/* Floating Parallax Input Box */}
-      <motion.div 
-        style={{ y: inputY }}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
-      >
-        <div style={{
-          width: '100%',
-          maxWidth: '700px',
-          background: 'rgba(5, 10, 15, 0.4)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '100px',
-          padding: '1rem',
-          backdropFilter: 'blur(24px)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1.5rem',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.6)',
-          marginTop: '3rem',
-          marginLeft: '10vw'
-        }}>
+        {/* Floating Parallax Input Box */}
+        <motion.div 
+          style={{ y: inputY, flex: '1 1 500px' }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+        >
+          <div style={{
+            width: '100%',
+            maxWidth: '700px',
+            background: 'rgba(5, 10, 15, 0.4)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '100px',
+            padding: '1rem',
+            backdropFilter: 'blur(24px)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1.5rem',
+            boxShadow: '0 30px 60px rgba(0,0,0,0.6)'
+          }}>
           <input 
             type="text" 
             placeholder="Type a workflow intent..." 
@@ -246,6 +253,7 @@ export function HeroSection() {
           </motion.button>
         </div>
       </motion.div>
+      </div>
 
     </section>
   );
