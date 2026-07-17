@@ -82,33 +82,82 @@ export function MechBootOverlay() {
             </div>
           </motion.div>
           
-          {/* Central Locking Mechanism */}
-          <motion.div
-            initial={{ scale: 1, opacity: 1, rotate: 0 }}
-            exit={{ scale: 0, opacity: 0, rotate: 90 }}
-            transition={{ duration: 0.3 }}
-            style={{
+          {/* Full Locking Mechanism */}
+          <div style={{
               position: "absolute",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: "120px",
-              height: "40px",
-              background: "var(--color-accent)",
-              color: "#000",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontFamily: "var(--font-mono)",
-              fontWeight: 700,
-              fontSize: "0.85rem",
-              letterSpacing: "0.2em",
-              borderRadius: "4px",
-              boxShadow: "0 0 20px rgba(178,213,229,0.4)"
-            }}
-          >
-            LOCKED
-          </motion.div>
+              zIndex: 10
+          }}>
+             {/* Left Lock Bar */}
+             <motion.div
+                initial={{ x: 0, opacity: 1 }}
+                exit={{ x: -100, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 100, damping: 10 }}
+                style={{
+                   width: '100px',
+                   height: '16px',
+                   background: '#050a0f',
+                   border: '1px solid var(--color-accent)',
+                   borderRight: 'none',
+                   marginRight: '-10px',
+                   zIndex: 1
+                }}
+             />
+             
+             {/* Central Rotating Hub */}
+             <motion.div
+               initial={{ rotate: 0, scale: 1, opacity: 1 }}
+               exit={{ rotate: 180, scale: 1.5, opacity: 0 }}
+               transition={{ duration: 0.4 }}
+               style={{
+                 width: '70px',
+                 height: '70px',
+                 borderRadius: '50%',
+                 background: '#050a0f',
+                 border: '2px dashed var(--color-accent)',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 zIndex: 2,
+                 boxShadow: '0 0 30px rgba(178,213,229,0.3)',
+                 padding: '5px'
+               }}
+             >
+               <motion.div 
+                 animate={{ rotate: 360 }} 
+                 transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                 style={{ 
+                   width: '100%', 
+                   height: '100%', 
+                   borderRadius: '50%', 
+                   border: '4px solid var(--color-accent)',
+                   borderTopColor: 'transparent',
+                   borderBottomColor: 'transparent'
+                 }} 
+               />
+             </motion.div>
+
+             {/* Right Lock Bar */}
+             <motion.div
+                initial={{ x: 0, opacity: 1 }}
+                exit={{ x: 100, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 100, damping: 10 }}
+                style={{
+                   width: '100px',
+                   height: '16px',
+                   background: '#050a0f',
+                   border: '1px solid var(--color-accent)',
+                   borderLeft: 'none',
+                   marginLeft: '-10px',
+                   zIndex: 1
+                }}
+             />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
