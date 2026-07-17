@@ -1,9 +1,16 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 export function InteractiveBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { scrollYProgress } = useScroll();
+  
+  // As user scrolls down, the grid tilts backward in 3D and zooms in slightly
+  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0.5, 0.1]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,12 +23,11 @@ export function InteractiveBackground() {
     canvas.width = width;
     canvas.height = height;
 
-    const spacing = 40; // Spacing between dots
+    const spacing = 40;
     const cols = Math.floor(width / spacing);
     const rows = Math.floor(height / spacing);
     const dots: { x: number, y: number, baseRadius: number }[] = [];
 
-    // Calculate grid offsets to center the grid
     const offsetX = (width - cols * spacing) / 2;
     const offsetY = (height - rows * spacing) / 2;
 
@@ -56,7 +62,7 @@ export function InteractiveBackground() {
       canvas.width = width;
       canvas.height = height;
       
-      dots.length = 0; // Clear array
+      dots.length = 0;
       const newCols = Math.floor(width / spacing);
       const newRows = Math.floor(height / spacing);
       const newOffsetX = (width - newCols * spacing) / 2;
@@ -88,18 +94,17 @@ export function InteractiveBackground() {
         
         const maxDist = 250;
         let radius = dot.baseRadius;
-        let opacity = 0.15; // Base very dim opacity
+        let dotOpacity = 0.15; 
 
         if (distance < maxDist) {
-          // Increase size and opacity based on proximity
           const intensity = 1 - (distance / maxDist);
           radius = dot.baseRadius + (intensity * 2.5);
-          opacity = 0.15 + (intensity * 0.85);
+          dotOpacity = 0.15 + (intensity * 0.85);
         }
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(178, 213, 229, ${opacity})`;
+        ctx.fillStyle = `rgba(178, 213, 229, ${dotOpacity})`;
         ctx.fill();
       }
 
@@ -117,18 +122,28 @@ export function InteractiveBackground() {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        zIndex: 0,
-        background: "var(--color-bg)" // solid dark background
-      }}
-    />
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      zIndex: 0,
+      pointerEvents: "none",
+      background: "var(--color-bg)",
+      perspective: "1000px", // Enables 3D space
+    }}>
+      <motion.canvas
+        ref={canvasRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          rotateX,
+          scale,
+          opacity,
+          transformOrigin: "center center",
+        }}
+      />
+    </div>
   );
 }
