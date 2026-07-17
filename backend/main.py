@@ -32,11 +32,8 @@ app.add_middleware(
 # Configure Strict CORS so only authorized domains can hit the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://auto-flow-tau.vercel.app"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
