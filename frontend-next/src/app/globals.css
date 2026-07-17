@@ -1,13 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   --color-bg: #020202;
   --color-accent: #B2D5E5;
+  --color-accent-dim: rgba(178, 213, 229, 0.5);
   --color-text: #FFFFFF;
-  
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+  --color-text-faint: rgba(255, 255, 255, 0.3);
+  --color-border: rgba(178, 213, 229, 0.12);
+  --color-border-bright: rgba(178, 213, 229, 0.3);
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(178, 213, 229, 0.06);
+
+  /* Typography Scale */
+  --text-xs: 0.72rem;
+  --text-sm: 0.85rem;
+  --text-base: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.4rem;
+  --text-2xl: 1.8rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.5rem;
+  --text-hero: clamp(3.5rem, 7vw, 7rem);
+
+  /* Spacing Scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-section: 8rem;
+
+  /* Fonts */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Glass */
   --glass-bg: rgba(2, 2, 2, 0.6);
   --glass-border: rgba(178, 213, 229, 0.2);
   --glass-blur: 24px;
+  
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
 }
 
 * {

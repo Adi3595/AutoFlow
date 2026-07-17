@@ -16,19 +16,19 @@ export function HeroSection() {
   const [activeNode, setActiveNode] = useState(0);
   const [intent, setIntent] = useState("");
   const [isDeploying, setIsDeploying] = useState(false);
+  const [deployMessage, setDeployMessage] = useState("");
   const [stats, setStats] = useState({ workflows: 0, agents: 0 });
 
+  // Load live stats from localStorage
   useEffect(() => {
-    // Load dynamic stats from local storage
-    const history = JSON.parse(localStorage.getItem("autoflow_history") || "[]");
-    const agents = JSON.parse(localStorage.getItem("autoflow_agents") || "[]");
-    
-    // De-duplicate agents by name for accurate count
-    const uniqueAgents = agents.filter((v: any, i: number, a: any[]) => a.findIndex((t: any) => (t.name === v.name)) === i);
-    
-    setStats({ workflows: history.length, agents: uniqueAgents.length });
+    const loadStats = () => {
+      const workflows = JSON.parse(localStorage.getItem("autoflow_workflows") || "[]");
+      const agents = JSON.parse(localStorage.getItem("autoflow_agents") || "[]");
+      const uniqueAgents = agents.filter((v: any, i: number, a: any[]) => a.findIndex((t: any) => t.name === v.name) === i);
+      setStats({ workflows: workflows.length, agents: uniqueAgents.length });
+    };
+    loadStats();
   }, []);
-  const [deployMessage, setDeployMessage] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,6 +36,7 @@ export function HeroSection() {
     }, 2000);
     return () => clearInterval(interval);
   }, []);
+
 
   const nodes = [
     { title: 'Parse Email', icon: <Database size={16} /> },

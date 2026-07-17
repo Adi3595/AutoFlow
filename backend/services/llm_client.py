@@ -52,32 +52,114 @@ class LLMClient:
     @staticmethod
     def generate_workflow_from_intent(intent: str) -> Tuple[List[WorkflowNode], List[Agent]]:
         prompt = f"""
-You are an intelligent workflow orchestration engine.
-The user has provided the following intent: "{intent}"
+You are an expert workflow automation architect. The user wants to automate: "{intent}"
 
-Generate a Directed Acyclic Graph (DAG) representing the sequence of operations required to fulfill this intent.
-Also, explicitly list the specialized AI "Agents" that must be spawned to execute these operations.
+Your task is to design a complete, production-ready automation workflow as a Directed Acyclic Graph (DAG).
 
-Output exactly valid JSON representing a dictionary with "nodes" and "agents". No markdown wrapping.
-Example structure:
+STRICT REQUIREMENTS:
+1. Generate between 5 and 10 nodes. Never fewer than 5.
+2. Every workflow MUST start with a "trigger" node and end with at least one "output" node.
+3. Use REAL tool names (Gmail, Slack, Notion, Jira, GitHub, PostgreSQL, PagerDuty, Twilio, Stripe, etc.)
+4. Node types must be one of: "trigger", "action", "condition", "transform", "output"
+5. Include a "condition" node whenever the workflow has branching logic (if/else, check, validate).
+6. Each node must have a clear, specific name describing the exact operation (e.g. "Parse Gmail Attachment for Invoice", NOT just "Parse Email").
+7. The metadata for each node must include: "tool" (the service used), "operation" (the API call or action), and "description" (1 sentence explaining what it does).
+
+NODE SEQUENCE RULES:
+- trigger → actions/transforms → optional conditions → outputs
+- Conditions must have at least two downstream paths (e.g., "on_true", "on_false")
+- The workflow must be logically complete — every path must end with an output node.
+
+Also generate 2-4 specialized AI Agents. Each agent is responsible for a domain of the workflow.
+
+Output ONLY valid JSON. No markdown, no explanation. Follow this exact schema:
 {{
   "nodes": [
     {{
-      "id": "node_123",
+      "id": "node_001",
       "type": "trigger",
-      "name": "Wait for trigger event",
-      "metadata": {{"key": "value"}}
+      "name": "Monitor Gmail for New Invoices",
+      "metadata": {{
+        "tool": "Gmail",
+        "operation": "watch_inbox",
+        "description": "Watches the inbox for emails with attachments matching invoice keywords.",
+        "next": ["node_002"]
+      }}
+    }},
+    {{
+      "id": "node_002",
+      "type": "action",
+      "name": "Extract Invoice Data from Attachment",
+      "metadata": {{
+        "tool": "Google Document AI",
+        "operation": "parse_document",
+        "description": "Uses Document AI to extract line items, totals, and vendor from the PDF.",
+        "next": ["node_003"]
+      }}
+    }},
+    {{
+      "id": "node_003",
+      "type": "condition",
+      "name": "Check if Invoice Total > $500",
+      "metadata": {{
+        "tool": "Internal Logic",
+        "operation": "threshold_check",
+        "description": "Evaluates if the extracted invoice total exceeds the approval threshold.",
+        "on_true": ["node_004"],
+        "on_false": ["node_005"]
+      }}
+    }},
+    {{
+      "id": "node_004",
+      "type": "action",
+      "name": "Send Slack Approval Request to Finance",
+      "metadata": {{
+        "tool": "Slack",
+        "operation": "post_message",
+        "description": "Posts an interactive approval card to the #finance Slack channel.",
+        "next": ["node_006"]
+      }}
+    }},
+    {{
+      "id": "node_005",
+      "type": "output",
+      "name": "Auto-Approve and Save to Notion Database",
+      "metadata": {{
+        "tool": "Notion",
+        "operation": "create_page",
+        "description": "Automatically logs small invoices to the accounting Notion database.",
+        "next": []
+      }}
+    }},
+    {{
+      "id": "node_006",
+      "type": "output",
+      "name": "Log Pending Approval to PostgreSQL",
+      "metadata": {{
+        "tool": "PostgreSQL",
+        "operation": "insert_row",
+        "description": "Records the invoice as pending in the approvals table.",
+        "next": []
+      }}
     }}
   ],
   "agents": [
     {{
-      "id": "agent_abc",
-      "name": "Email Parsing Agent",
+      "id": "agent_001",
+      "name": "Document Intelligence Agent",
       "role": "Data Extraction",
-      "description": "Extracts invoices and sentiment from incoming emails."
+      "description": "Specializes in parsing structured data from PDFs, emails, and spreadsheets using OCR and NLP."
+    }},
+    {{
+      "id": "agent_002",
+      "name": "Finance Routing Agent",
+      "role": "Decision & Approval",
+      "description": "Handles conditional logic, threshold checks, and approval routing across financial workflows."
     }}
   ]
 }}
+
+Now generate a complete workflow for: "{intent}"
 """
         try:
             raw_text = LLMClient._call_gemini(prompt, json_mode=True)
