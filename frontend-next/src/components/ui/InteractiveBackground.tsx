@@ -2,15 +2,19 @@
 
 import React, { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export function InteractiveBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { scrollYProgress } = useScroll();
+  const pathname = usePathname();
   
-  // As user scrolls down, the grid tilts backward in 3D and zooms in slightly
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.5]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0.5, 0.1]);
+  const isLandingPage = pathname === '/';
+  
+  // As user scrolls down, the grid tilts backward in 3D and zooms in slightly (only on landing page)
+  const rotateX = useTransform(scrollYProgress, [0, 1], [0, isLandingPage ? 60 : 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, isLandingPage ? 1.5 : 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, isLandingPage ? 0.5 : 1, isLandingPage ? 0.1 : 1]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
