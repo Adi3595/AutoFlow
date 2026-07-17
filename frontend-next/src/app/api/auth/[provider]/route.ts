@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { provider: string } }
+  { params }: { params: Promise<{ provider: string }> }
 ) {
-  const provider = params.provider.toLowerCase();
+  const resolvedParams = await params;
+  const provider = resolvedParams.provider.toLowerCase();
   
   // Use VERCEL_URL if available, otherwise fallback to localhost for local testing
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
