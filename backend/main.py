@@ -23,17 +23,21 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Add Rate Limiting Middleware
 app.add_middleware(SlowAPIMiddleware)
 
-# Trusted Host Middleware to prevent Host Header attacks
-app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.onrender.com"]
-)
+import os
+import json
 
-# Configure Strict CORS so only authorized domains can hit the API
+# Parse CORS origins from env (JSON string) or default to wildcard
+cors_origins_str = os.getenv("BACKEND_CORS_ORIGINS", '["*"]')
+try:
+    cors_origins = json.loads(cors_origins_str)
+except Exception:
+    cors_origins = ["*"]
+
+# Configure Strict CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=cors_origins,
+    allow_credentials=True if "*" not in cors_origins else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
