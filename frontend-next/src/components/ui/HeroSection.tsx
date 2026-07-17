@@ -174,7 +174,7 @@ export function HeroSection() {
           fontSize: '1.25rem', 
           maxWidth: '450px', 
           lineHeight: 1.6,
-          marginTop: '4rem',
+          marginTop: '1rem',
           paddingLeft: '20vw'
         }}
       >
