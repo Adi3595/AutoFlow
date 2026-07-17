@@ -192,7 +192,7 @@ export function HeroSection() {
 
         {/* Floating Parallax Input Box */}
         <motion.div 
-          style={{ y: inputY, flex: '1 1 500px' }}
+          style={{ y: inputY, flex: '1 1 500px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
@@ -210,48 +210,81 @@ export function HeroSection() {
             gap: '1.5rem',
             boxShadow: '0 30px 60px rgba(0,0,0,0.6)'
           }}>
-          <input 
-            type="text" 
-            placeholder="Type a workflow intent..." 
-            value={intent}
-            onChange={(e) => setIntent(e.target.value)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'white',
-              width: '100%',
-              fontFamily: 'var(--font-body), sans-serif',
-              fontSize: '1.25rem',
-              outline: 'none',
-              paddingLeft: '1.5rem'
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !isDeploying) handleDeploy();
-            }}
-          />
-          <motion.button 
-            onClick={handleDeploy}
-            whileHover={{ scale: 1.05, backgroundColor: '#fff' }}
-            whileTap={{ scale: 0.95 }}
-            disabled={isDeploying}
-            style={{
-              background: 'var(--color-accent)',
-              color: '#000',
-              border: 'none',
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              cursor: isDeploying ? 'wait' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              transition: 'background-color 0.3s ease'
-            }}
-          >
-            {isDeploying ? <Loader2 size={24} className="animate-spin" /> : <ArrowRight size={24} />}
-          </motion.button>
-        </div>
+            <input 
+              type="text" 
+              placeholder="Type a workflow intent..." 
+              value={intent}
+              onChange={(e) => setIntent(e.target.value)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'white',
+                width: '100%',
+                fontFamily: 'var(--font-body), sans-serif',
+                fontSize: '1.25rem',
+                outline: 'none',
+                paddingLeft: '1.5rem'
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !isDeploying) handleDeploy();
+              }}
+            />
+            <motion.button 
+              onClick={handleDeploy}
+              whileHover={{ scale: 1.05, backgroundColor: '#fff' }}
+              whileTap={{ scale: 0.95 }}
+              disabled={isDeploying}
+              style={{
+                background: 'var(--color-accent)',
+                color: '#000',
+                border: 'none',
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                cursor: isDeploying ? 'wait' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                transition: 'background-color 0.3s ease'
+              }}
+            >
+              {isDeploying ? <Loader2 size={24} className="animate-spin" /> : <ArrowRight size={24} />}
+            </motion.button>
+          </div>
+
+          {/* Suggestion Pills */}
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingLeft: '1.5rem' }}>
+             {["Build a scalable RAG backend", "Create a Stripe checkout webhook", "Automate KYC flow"].map((suggestion, idx) => (
+                <button
+                   key={idx}
+                   onClick={() => setIntent(suggestion)}
+                   style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: 'rgba(255,255,255,0.5)',
+                      padding: '0.6rem 1.2rem',
+                      borderRadius: '50px',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      fontFamily: 'var(--font-mono)'
+                   }}
+                   onMouseOver={(e) => {
+                     e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                     e.currentTarget.style.color = '#fff';
+                     e.currentTarget.style.borderColor = 'var(--color-accent)';
+                   }}
+                   onMouseOut={(e) => {
+                     e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                     e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                   }}
+                >
+                   {suggestion}
+                </button>
+             ))}
+          </div>
       </motion.div>
       </div>
 
