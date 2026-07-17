@@ -54,10 +54,20 @@ class LLMClient:
                     raw_text = raw_text[:-3]
                     
             return raw_text
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode('utf-8', errors='replace')
+            print(f"[GROQ HTTP ERROR] Status: {e.code}, Reason: {e.reason}")
+            print(f"[GROQ HTTP ERROR BODY] {error_body}")
+            raise Exception(f"HTTP Error {e.code}: {e.reason} - {error_body}")
         except urllib.error.URLError as e:
+            print(f"[GROQ NETWORK ERROR] {e}")
             raise Exception(f"Network Error: {e}")
         except (KeyError, IndexError) as e:
+            print(f"[GROQ PARSE ERROR] Unexpected response structure: {e}")
             raise Exception(f"Unexpected response structure: {e}")
+        except Exception as e:
+            print(f"[GROQ UNKNOWN ERROR] {e}")
+            raise Exception(f"Unknown Error: {e}")
 
 
     @staticmethod
