@@ -208,19 +208,28 @@ export function HeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
         >
-          <div style={{
-            width: '100%',
-            maxWidth: '700px',
-            background: 'rgba(5, 10, 15, 0.4)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '100px',
-            padding: '1rem',
-            backdropFilter: 'blur(24px)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1.5rem',
-            boxShadow: '0 30px 60px rgba(0,0,0,0.6)'
-          }}>
+          <motion.div 
+            animate={{ 
+              boxShadow: [
+                '0 30px 60px rgba(0,0,0,0.6), 0 0 0px rgba(178, 213, 229, 0)', 
+                '0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(178, 213, 229, 0.5)', 
+                '0 30px 60px rgba(0,0,0,0.6), 0 0 0px rgba(178, 213, 229, 0)'
+              ],
+              borderColor: ['rgba(255,255,255,0.2)', 'rgba(178, 213, 229, 0.8)', 'rgba(255,255,255,0.2)']
+            }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            style={{
+              width: '100%',
+              maxWidth: '700px',
+              background: 'rgba(5, 10, 15, 0.75)',
+              border: '2px solid',
+              borderRadius: '100px',
+              padding: '1rem',
+              backdropFilter: 'blur(24px)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.5rem',
+            }}>
             <input 
               type="text" 
               placeholder="Type a workflow intent..." 
@@ -262,7 +271,7 @@ export function HeroSection() {
             >
               {isDeploying ? <Loader2 size={24} className="animate-spin" /> : <ArrowRight size={24} />}
             </motion.button>
-          </div>
+          </motion.div>
 
           {/* Suggestion Pills */}
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', paddingLeft: '1.5rem' }}>
