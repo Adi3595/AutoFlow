@@ -189,10 +189,7 @@ export function HeroSection() {
         transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
       >
         <div style={{
-          position: 'absolute',
-          bottom: '10vh',
-          right: '5vw',
-          width: '90%',
+          width: '100%',
           maxWidth: '700px',
           background: 'rgba(5, 10, 15, 0.4)',
           border: '1px solid rgba(255,255,255,0.1)',
@@ -202,7 +199,9 @@ export function HeroSection() {
           display: 'flex',
           alignItems: 'center',
           gap: '1.5rem',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.6)'
+          boxShadow: '0 30px 60px rgba(0,0,0,0.6)',
+          marginTop: '3rem',
+          marginLeft: '10vw'
         }}>
           <input 
             type="text" 
