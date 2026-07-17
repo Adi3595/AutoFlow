@@ -118,7 +118,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "var(--color-bg)", color: "var(--color-text)" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "transparent", color: "var(--color-text)" }}>
 
       {/* ── Navbar ─────────────────────────────────────────── */}
       <header style={{ padding: "1.2rem 2.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-border)", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 50 }}>

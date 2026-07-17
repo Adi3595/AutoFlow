@@ -192,7 +192,7 @@ export default function AgentsPage() {
   const running = agents.length; // all are simulated as active
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--color-bg)", color: "var(--color-text)" }}>
+    <div style={{ minHeight: "100vh", background: "transparent", color: "var(--color-text)" }}>
       {/* Header */}
       <header style={{ padding: "1.25rem 3rem", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--color-border)", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(12px)", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>

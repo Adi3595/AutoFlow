@@ -79,7 +79,7 @@ export default function IntegrationsPage() {
       minHeight: "100vh",
       display: "flex",
       flexDirection: "column",
-      backgroundColor: "var(--color-bg)",
+      backgroundColor: "transparent",
       color: "var(--color-text)",
     }}>
       
